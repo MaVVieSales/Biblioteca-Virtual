@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Virtual: Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="Imagem/ico.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #6b0f0d 0%, #8b1614 25%, #c41520 50%, #8b1614 75%, #6b0f0d 100%);
+            transition: all 0.5s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+        }
+
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .crystal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .crystal {
+            position: absolute;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 20px rgba(196, 21, 32, 0.3));
+        }
+
+        .crystal-base-left-1 {
+            bottom: -120px;
+            left: -180px;
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, transparent 0%, rgba(139, 22, 20, 0.15) 30%, transparent 60%), linear-gradient(225deg, #8b1614 0%, #6b0f0d 50%, #4a0908 100%);
+            opacity: 0.75;
+            animation: pulse-glow-faceted 6s ease-in-out infinite;
+        }
+
+        .crystal-base-left-2 {
+            bottom: -30px;
+            left: 80px;
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(120deg, rgba(227, 6, 19, 0.2) 0%, transparent 50%), linear-gradient(180deg, #9a1915 0%, #6b0f0d 100%);
+            opacity: 0.65;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 1.5s;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            transform: rotate(15deg);
+        }
+
+        .crystal-base-left-3 {
+            bottom: 120px;
+            left: -60px;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(90deg, transparent 0%, rgba(196, 21, 32, 0.25) 40%, transparent 80%), linear-gradient(135deg, #8b1614 0%, #540b0a 100%);
+            opacity: 0.55;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 3s;
+            transform: rotate(-20deg);
+        }
+
+        .crystal-base-right-1 {
+            top: -120px;
+            right: -180px;
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(315deg, transparent 0%, rgba(139, 22, 20, 0.15) 30%, transparent 60%), linear-gradient(45deg, #8b1614 0%, #6b0f0d 50%, #4a0908 100%);
+            opacity: 0.75;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 0.8s;
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+        }
+
+        .crystal-base-right-2 {
+            top: -30px;
+            right: 80px;
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(240deg, rgba(227, 6, 19, 0.2) 0%, transparent 50%), linear-gradient(0deg, #9a1915 0%, #6b0f0d 100%);
+            opacity: 0.65;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 2.3s;
+            clip-path: polygon(50% 100%, 100% 0%, 0% 0%);
+            transform: rotate(-15deg);
+        }
+
+        .crystal-base-right-3 {
+            top: 120px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(270deg, transparent 0%, rgba(196, 21, 32, 0.25) 40%, transparent 80%), linear-gradient(315deg, #8b1614 0%, #540b0a 100%);
+            opacity: 0.55;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 4s;
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+            transform: rotate(20deg);
+        }
+
+        .crystal-float-left-1 {
+            bottom: 25%;
+            left: 8%;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, rgba(227, 6, 19, 0.3) 0%, transparent 70%), linear-gradient(180deg, #c41520 0%, #7d1210 100%);
+            opacity: 0.6;
+            animation: float-organic-left-1 14s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(196, 21, 32, 0.4));
+        }
+
+        .crystal-float-left-2 {
+            bottom: 48%;
+            left: 3%;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(120deg, rgba(227, 6, 19, 0.25) 0%, transparent 60%), linear-gradient(200deg, #9a1915 0%, #6b0f0d 100%);
+            opacity: 0.5;
+            animation: float-organic-left-2 16s ease-in-out infinite;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            filter: drop-shadow(0 0 12px rgba(196, 21, 32, 0.3));
+        }
+
+        .crystal-float-left-3 {
+            bottom: 65%;
+            left: 6%;
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(90deg, transparent 0%, rgba(196, 21, 32, 0.2) 50%, transparent 100%), linear-gradient(135deg, #8b1614 0%, #540b0a 100%);
+            opacity: 0.55;
+            animation: float-organic-left-3 18s ease-in-out infinite;
+            filter: drop-shadow(0 0 18px rgba(196, 21, 32, 0.35));
+        }
+
+        .crystal-float-right-1 {
+            top: 25%;
+            right: 8%;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(315deg, rgba(227, 6, 19, 0.3) 0%, transparent 70%), linear-gradient(0deg, #c41520 0%, #7d1210 100%);
+            opacity: 0.6;
+            animation: float-organic-right-1 15s ease-in-out infinite;
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+            filter: drop-shadow(0 0 15px rgba(196, 21, 32, 0.4));
+        }
+
+        .crystal-float-right-2 {
+            top: 48%;
+            right: 3%;
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(240deg, rgba(227, 6, 19, 0.25) 0%, transparent 60%), linear-gradient(340deg, #9a1915 0%, #6b0f0d 100%);
+            opacity: 0.5;
+            animation: float-organic-right-2 17s ease-in-out infinite;
+            clip-path: polygon(50% 100%, 100% 0%, 0% 0%);
+            filter: drop-shadow(0 0 12px rgba(196, 21, 32, 0.3));
+        }
+
+        .crystal-float-right-3 {
+            top: 65%;
+            right: 6%;
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(270deg, transparent 0%, rgba(196, 21, 32, 0.2) 50%, transparent 100%), linear-gradient(315deg, #8b1614 0%, #540b0a 100%);
+            opacity: 0.55;
+            animation: float-organic-right-3 19s ease-in-out infinite;
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+            filter: drop-shadow(0 0 18px rgba(196, 21, 32, 0.35));
+        }
+
+        @keyframes pulse-glow-faceted {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                filter: brightness(1) drop-shadow(0 0 20px rgba(196, 21, 32, 0.3));
+                transform: scale(1);
+            }
+
+            33% {
+                opacity: 0.85;
+                filter: brightness(1.15) drop-shadow(0 0 30px rgba(227, 6, 19, 0.5));
+                transform: scale(1.02);
+            }
+
+            66% {
+                opacity: 0.75;
+                filter: brightness(1.25) drop-shadow(0 0 35px rgba(196, 21, 32, 0.6));
+                transform: scale(1.03);
+            }
+        }
+
+        @keyframes float-organic-left-1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.7;
+            }
+
+            25% {
+                transform: translate(25px, -30px) rotate(15deg) scale(1.15);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translate(45px, -55px) rotate(-10deg) scale(0.95);
+                opacity: 0.5;
+            }
+
+            75% {
+                transform: translate(30px, -35px) rotate(20deg) scale(1.1);
+                opacity: 0.75;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes float-organic-left-2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+
+            12% {
+                opacity: 0.6;
+            }
+
+            30% {
+                transform: translate(35px, -25px) rotate(-20deg) scale(1.2);
+                opacity: 0.75;
+            }
+
+            55% {
+                transform: translate(50px, -60px) rotate(15deg) scale(0.9);
+                opacity: 0.4;
+            }
+
+            80% {
+                transform: translate(25px, -40px) rotate(-15deg) scale(1.05);
+                opacity: 0.65;
+            }
+
+            92% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes float-organic-left-3 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 0.65;
+            }
+
+            35% {
+                transform: translate(40px, -45px) rotate(25deg) scale(1.1);
+                opacity: 0.7;
+            }
+
+            60% {
+                transform: translate(55px, -70px) rotate(-20deg) scale(0.85);
+                opacity: 0.45;
+            }
+
+            85% {
+                transform: translate(35px, -50px) rotate(18deg) scale(1.15);
+                opacity: 0.7;
+            }
+
+            93% {
+                opacity: 0.55;
+            }
+        }
+
+        @keyframes float-organic-right-1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.7;
+            }
+
+            25% {
+                transform: translate(-25px, 30px) rotate(-15deg) scale(1.15);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translate(-45px, 55px) rotate(10deg) scale(0.95);
+                opacity: 0.5;
+            }
+
+            75% {
+                transform: translate(-30px, 35px) rotate(-20deg) scale(1.1);
+                opacity: 0.75;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes float-organic-right-2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+
+            12% {
+                opacity: 0.6;
+            }
+
+            30% {
+                transform: translate(-35px, 25px) rotate(20deg) scale(1.2);
+                opacity: 0.75;
+            }
+
+            55% {
+                transform: translate(-50px, 60px) rotate(-15deg) scale(0.9);
+                opacity: 0.4;
+            }
+
+            80% {
+                transform: translate(-25px, 40px) rotate(15deg) scale(1.05);
+                opacity: 0.65;
+            }
+
+            92% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes float-organic-right-3 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 0.65;
+            }
+
+            35% {
+                transform: translate(-40px, 45px) rotate(-25deg) scale(1.1);
+                opacity: 0.7;
+            }
+
+            60% {
+                transform: translate(-55px, 70px) rotate(20deg) scale(0.85);
+                opacity: 0.45;
+            }
+
+            85% {
+                transform: translate(-35px, 50px) rotate(-18deg) scale(1.15);
+                opacity: 0.7;
+            }
+
+            93% {
+                opacity: 0.55;
+            }
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 750px;
+            animation: fadeInUp 0.8s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-align: center;
+            margin-bottom: 0;
+            width: 270px;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .login-header {
+            background: #1f1f1f;
+        }
+
+        .login-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #333;
+            margin: 0;
+        }
+
+        body.dark-mode .login-header h1 {
+            color: white;
+        }
+
+        .login-box {
+            background: white;
+            padding: 3rem 2rem;
+            padding-top: 4rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            margin-top: -20px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .login-box {
+            background: #1f1f1f;
+        }
+
+        .welcome-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        body.dark-mode .welcome-text {
+            color: white;
+        }
+
+        .error-message {
+            color: #e30613;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+            min-height: 30px;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        body.dark-mode .form-group label {
+            color: white;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            background-color: rgba(0, 0, 0, 0.08);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        body.dark-mode .form-group input {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background-color: rgba(154, 25, 21, 0.1);
+            box-shadow: 0 0 0 3px rgba(154, 25, 21, 0.2);
+        }
+
+        body.dark-mode .form-group input:focus {
+            background-color: rgba(227, 6, 19, 0.15);
+            box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.3);
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        body.dark-mode .forgot-password {
+            color: white;
+        }
+
+        .btn-submit {
+            width: 45%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #e30613, #9a1915);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-submit:hover {
+            background: #c41018;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(154, 25, 21, 0.4);
+        }
+
+        .btn-cancelar {
+            width: 45%;
+            padding: 1rem;
+            color: white;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancelar:hover {
+            background: #c41018;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(154, 25, 21, 0.4);
+            color: white;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            right: 30px;
+            bottom: 80px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(154, 25, 21, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(154, 25, 21, 0.6);
+        }
+
+        .theme-icon {
+            width: 30px;
+            height: 30px;
+            transition: transform 0.5s ease;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        .logo-senai {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 350px;
+            height: auto;
+            z-index: 1;
+        }
+
+        @media(max-width: 600px) {
+            .logo-senai {
+                width: 250px;
+            }
+
+            .form-header {
+                width: 90%;
+            }
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 30px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: all;
+            border-left: 4px solid;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        body.dark-mode .toast {
+            background: linear-gradient(145deg, #1a1a1a, #252525);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .toast.toast-success {
+            border-left-color: #28a745;
+        }
+
+        .toast.toast-error {
+            border-left-color: #dc3545;
+        }
+
+        .toast.toast-warning {
+            border-left-color: #ffc107;
+        }
+
+        .toast.toast-info {
+            border-left-color: #17a2b8;
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            color: #28a745;
+        }
+
+        .toast-error .toast-icon {
+            color: #dc3545;
+        }
+
+        .toast-warning .toast-icon {
+            color: #ffc107;
+        }
+
+        .toast-info .toast-icon {
+            color: #17a2b8;
+        }
+
+        .toast-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        body.dark-mode .toast-title {
+            color: #e0e0e0;
+        }
+
+        .toast-message {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        body.dark-mode .toast-message {
+            color: #aaa;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        body.dark-mode .toast-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast.removing {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        @media(max-width: 600px) {
+            .toast-container {
+                right: 10px;
+                left: 10px;
+                max-width: 100%;
+            }
+
+            .toast {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <div id="tsparticles"></div>
+
+    <div class="crystal-container">
+        <div class="crystal crystal-base-left-1"></div>
+        <div class="crystal crystal-base-left-2"></div>
+        <div class="crystal crystal-base-left-3"></div>
+        <div class="crystal crystal-base-right-1"></div>
+        <div class="crystal crystal-base-right-2"></div>
+        <div class="crystal crystal-base-right-3"></div>
+        <div class="crystal crystal-float-left-1"></div>
+        <div class="crystal crystal-float-left-2"></div>
+        <div class="crystal crystal-float-left-3"></div>
+        <div class="crystal crystal-float-right-1"></div>
+        <div class="crystal crystal-float-right-2"></div>
+        <div class="crystal crystal-float-right-3"></div>
+    </div>
+
+    <div class="miniheader">
+        <img src="Imagem/senai_todo.png" alt="Logo SENAI" class="logo-senai">
+    </div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Entrar</h1>
+        </div>
+        <div class="login-box">
+            <h2 class="welcome-text">Bem-vindo(a) de volta à Biblioteca Virtual!</h2>
+            <p class="error-message" id="erro">Usuário ou senha inválidos!</p>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" placeholder="seu@email.com">
+            </div>
+            <div class="form-group" style="position: relative;">
+                <label for="senhaAdm">Senha:</label>
+                <input type="password" id="senhaAdm" placeholder="••••••••">
+                <i class="fa-solid fa-eye" id="toggleSenha"
+                    style="position: absolute; right: 20px; top: 50px; cursor: pointer; color: #555;"></i>
+            </div>
+
+            <div class="actions">
+                <a href="index.html" class="btn-cancelar">Cancelar</a>
+                <button class="btn-submit" id="login">Avançar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg class="theme-icon" id="theme-icon" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+        </svg>
+    </div>
+
+    <footer>
+        <p>© DEV 2A - SENAI 9.14 | <span id="year">2025</span></p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="config.js"></script>
+
+    <script src="theme-manager.js"></script>
+
+    <script>
+        function showToast(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const icons = {
+                success: 'fa-circle-check',
+                error: 'fa-circle-xmark',
+                warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info'
+            };
+
+            const titles = {
+                success: 'Sucesso',
+                error: 'Erro',
+                warning: 'Atenção',
+                info: 'Informação'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]} toast-icon"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    toast.classList.add('removing');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+        }
+
+        tsParticles.load("tsparticles", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ["#f69697", "#ffdddd", "#ffe6e6"] },
+                shape: { type: "triangle" },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.2, sync: false } },
+                size: { value: 5, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+                links: { enable: false },
+                move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    repulse: { distance: 100, duration: 0.4 },
+                    push: { particles_nb: 4 }
+                }
+            },
+            detectRetina: true
+        });
+
+        const toggleSenha = document.getElementById('toggleSenha');
+        const inputSenha = document.getElementById('senhaAdm');
+
+        toggleSenha.addEventListener('click', () => {
+            const tipo = inputSenha.type === 'password' ? 'text' : 'password';
+            inputSenha.type = tipo;
+            toggleSenha.classList.toggle('fa-eye');
+            toggleSenha.classList.toggle('fa-eye-slash');
+        });
+
+        document.getElementById('login').addEventListener('click', async () => {
+            const email = document.getElementById('email').value.trim();
+            const senhaAdm = document.getElementById('senhaAdm').value.trim();
+            const erro = document.getElementById('erro');
+
+            if (!email || !senhaAdm) {
+                showToast("Por favor, preencha todos os campos!", "warning");
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast("Por favor, insira um e-mail válido!", "warning");
+                return;
+            }
+
+            try {
+                const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+
+                showToast("Autenticando...", "info", 0);
+
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senhaAdm })
+                });
+
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach(toast => {
+                    if (toast.textContent.includes('Autenticando')) {
+                        toast.remove();
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('userId', data.usuario.id);
+                    localStorage.setItem('nomeUsuario', data.usuario.nome);
+                    localStorage.setItem('emailUsuario', data.usuario.email);
+                    if (data.usuario.foto) {
+                        localStorage.setItem('fotoUsuario', data.usuario.foto);
+                    }
+
+                    showToast("Login realizado com sucesso! Redirecionando...", "success");
+
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+                } else {
+                    showToast(data.Mensagem || "Usuário ou senha inválidos!", "error");
+                }
+            } catch (error) {
+                console.error('Erro ao fazer login:', error);
+
+                const toasts = document.querySelectorAll('.toast');
+                toasts.forEach(toast => {
+                    if (toast.textContent.includes('Autenticando')) {
+                        toast.remove();
+                    }
+                });
+
+                showToast("Erro ao conectar com o servidor! Verifique sua conexão.", "error");
+            }
+        });
+
+        document.getElementById('senhaAdm').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('login').click();
+            }
+        });
+
+        document.getElementById('email').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('login').click();
+            }
+        });
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

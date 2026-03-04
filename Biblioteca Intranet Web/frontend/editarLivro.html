@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Virtual: Editar Livro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" type="image/png" href="Imagem/ico.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #6b0f0d 0%, #8b1614 25%, #c41520 50%, #8b1614 75%, #6b0f0d 100%);
+            transition: all 0.5s ease;
+            padding: 3rem 0;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 30px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            pointer-events: all;
+            border-left: 4px solid;
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        body.dark-mode .toast {
+            background: linear-gradient(145deg, #1a1a1a, #252525);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .toast.toast-success {
+            border-left-color: #28a745;
+        }
+
+        .toast.toast-error {
+            border-left-color: #dc3545;
+        }
+
+        .toast.toast-warning {
+            border-left-color: #ffc107;
+        }
+
+        .toast.toast-info {
+            border-left-color: #17a2b8;
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            color: #28a745;
+        }
+
+        .toast-error .toast-icon {
+            color: #dc3545;
+        }
+
+        .toast-warning .toast-icon {
+            color: #ffc107;
+        }
+
+        .toast-info .toast-icon {
+            color: #17a2b8;
+        }
+
+        .toast-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        body.dark-mode .toast-title {
+            color: #e0e0e0;
+        }
+
+        .toast-message {
+            font-size: 0.85rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        body.dark-mode .toast-message {
+            color: #aaa;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .toast-close:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        body.dark-mode .toast-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .toast.removing {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        #tsparticles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .crystal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .crystal {
+            position: absolute;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 20px rgba(196, 21, 32, 0.3));
+        }
+
+        .crystal-base-left-1 {
+            bottom: -120px;
+            left: -180px;
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, transparent 0%, rgba(139, 22, 20, 0.15) 30%, transparent 60%), linear-gradient(225deg, #8b1614 0%, #6b0f0d 50%, #4a0908 100%);
+            opacity: 0.75;
+            animation: pulse-glow-faceted 6s ease-in-out infinite;
+            transform: rotate(0deg);
+        }
+
+        .crystal-base-left-2 {
+            bottom: -30px;
+            left: 80px;
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(120deg, rgba(227, 6, 19, 0.2) 0%, transparent 50%), linear-gradient(180deg, #9a1915 0%, #6b0f0d 100%);
+            opacity: 0.65;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 1.5s;
+            clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+            transform: rotate(15deg);
+        }
+
+        .crystal-base-left-3 {
+            bottom: 120px;
+            left: -60px;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(90deg, transparent 0%, rgba(196, 21, 32, 0.25) 40%, transparent 80%), linear-gradient(135deg, #8b1614 0%, #540b0a 100%);
+            opacity: 0.55;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 3s;
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            transform: rotate(-20deg);
+        }
+
+        .crystal-base-right-1 {
+            top: -120px;
+            right: -180px;
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(315deg, transparent 0%, rgba(139, 22, 20, 0.15) 30%, transparent 60%), linear-gradient(45deg, #8b1614 0%, #6b0f0d 50%, #4a0908 100%);
+            opacity: 0.75;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 0.8s;
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+            transform: rotate(0deg);
+        }
+
+        .crystal-base-right-2 {
+            top: -30px;
+            right: 80px;
+            width: 320px;
+            height: 320px;
+            background: linear-gradient(240deg, rgba(227, 6, 19, 0.2) 0%, transparent 50%), linear-gradient(0deg, #9a1915 0%, #6b0f0d 100%);
+            opacity: 0.65;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 2.3s;
+            clip-path: polygon(50% 100%, 100% 0%, 0% 0%);
+            transform: rotate(-15deg);
+        }
+
+        .crystal-base-right-3 {
+            top: 120px;
+            right: -60px;
+            width: 280px;
+            height: 280px;
+            background: linear-gradient(270deg, transparent 0%, rgba(196, 21, 32, 0.25) 40%, transparent 80%), linear-gradient(315deg, #8b1614 0%, #540b0a 100%);
+            opacity: 0.55;
+            animation: pulse-glow-faceted 6s ease-in-out infinite 4s;
+            clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+            transform: rotate(20deg);
+        }
+
+        @keyframes pulse-glow-faceted {
+
+            0%,
+            100% {
+                opacity: 0.7;
+                filter: brightness(1) drop-shadow(0 0 20px rgba(196, 21, 32, 0.3));
+                transform: rotate(0deg) scale(1);
+            }
+
+            33% {
+                opacity: 0.85;
+                filter: brightness(1.15) drop-shadow(0 0 30px rgba(227, 6, 19, 0.5));
+                transform: rotate(2deg) scale(1.02);
+            }
+
+            66% {
+                opacity: 0.75;
+                filter: brightness(1.25) drop-shadow(0 0 35px rgba(196, 21, 32, 0.6));
+                transform: rotate(-1deg) scale(1.03);
+            }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 950px;
+            animation: fadeInUp 0.8s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-header {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: none;
+            transition: all 0.3s ease;
+            margin-bottom: 0;
+            width: 350px;
+            z-index: 2;
+        }
+
+        body.dark-mode .form-header {
+            background: #1f1f1f;
+        }
+
+        .form-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #333;
+            margin: 0;
+        }
+
+        body.dark-mode .form-header h1 {
+            color: white;
+        }
+
+        .form-box {
+            background: white;
+            padding: 3rem 2.5rem;
+            padding-top: 4rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: -20px;
+        }
+
+        body.dark-mode .form-box {
+            background: #1f1f1f;
+        }
+
+        .welcome-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        body.dark-mode .welcome-text {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        body.dark-mode .form-group label {
+            color: white;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+            border: none;
+            background-color: rgba(0, 0, 0, 0.08);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
+            color: #333;
+        }
+
+        body.dark-mode .form-group input {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background-color: rgba(154, 25, 21, 0.1);
+            box-shadow: 0 0 0 3px rgba(154, 25, 21, 0.2);
+        }
+
+        body.dark-mode .form-group input:focus {
+            background-color: rgba(227, 6, 19, 0.15);
+            box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.3);
+        }
+
+        .btn-submit {
+            width: 45%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #e30613, #9a1915);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-submit:hover {
+            background: #c41018;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(154, 25, 21, 0.4);
+        }
+
+        .btn-cancelar {
+            width: 45%;
+            padding: 1rem 2rem;
+            color: white;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            border-radius: 30px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-cancelar:hover {
+            background: #c41018;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(154, 25, 21, 0.4);
+            color: white;
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .book-form-layout {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 1rem;
+            padding: 0px;
+            margin: 0%;
+        }
+
+        .form-inputs {
+            flex: 2;
+        }
+
+        .form-preview-area {
+            flex: 1;
+        }
+
+        .cover-preview-container {
+            width: 100%;
+            height: 77.7%;
+            aspect-ratio: 2 / 3;
+            background-color: rgba(0, 0, 0, 0.08);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #888;
+        }
+
+        body.dark-mode .cover-preview-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #777;
+        }
+
+        #previewCapa {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .quantity-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .quantity-container .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .quantity-container .form-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .quantity-container .form-group input {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            right: 30px;
+            bottom: 80px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(154, 25, 21, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .theme-icon {
+            width: 30px;
+            height: 30px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            z-index: 1;
+        }
+
+        .logo-senai {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 350px;
+            height: auto;
+            z-index: 1;
+        }
+
+        @media(max-width: 900px) {
+            .book-form-layout {
+                flex-direction: column;
+            }
+
+            .form-preview-area {
+                order: -1;
+                max-width: 250px;
+                margin: 0 auto 2rem;
+            }
+
+            .main-container {
+                max-width: 750px;
+            }
+        }
+
+        @media(max-width: 600px) {
+            .logo-senai {
+                width: 250px;
+            }
+
+            .form-header {
+                width: 90%;
+            }
+
+            .toast-container {
+                right: 10px;
+                left: 10px;
+                max-width: 100%;
+            }
+
+            .toast {
+                min-width: auto;
+            }
+        }
+
+        .autocomplete-container {
+            position: relative;
+        }
+
+        .autocomplete-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #9a1915;
+            border-top: none;
+            border-radius: 0 0 25px 25px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            margin-top: -10px;
+        }
+
+        body.dark-mode .autocomplete-results {
+            background: #2a2a2a;
+            border-color: #e30613;
+        }
+
+        .autocomplete-results.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: background 0.2s;
+            color: #333;
+        }
+
+        body.dark-mode .autocomplete-item {
+            color: white;
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .autocomplete-item:hover {
+            background: rgba(154, 25, 21, 0.1);
+        }
+
+        body.dark-mode .autocomplete-item:hover {
+            background: rgba(227, 6, 19, 0.2);
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-no-results {
+            padding: 12px 20px;
+            color: #666;
+            font-style: italic;
+        }
+
+        body.dark-mode .autocomplete-no-results {
+            color: #999;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <div id="tsparticles"></div>
+
+    <div class="crystal-container">
+        <div class="crystal crystal-base-left-1"></div>
+        <div class="crystal crystal-base-left-2"></div>
+        <div class="crystal crystal-base-left-3"></div>
+        <div class="crystal crystal-base-right-1"></div>
+        <div class="crystal crystal-base-right-2"></div>
+        <div class="crystal crystal-base-right-3"></div>
+    </div>
+
+    <img src="Imagem/senai_todo.png" alt="Logo SENAI" class="logo-senai">
+
+    <div class="main-container">
+        <div class="form-header">
+            <h1>Editar Livro</h1>
+        </div>
+        <div class="form-box">
+            <h2 class="welcome-text">Altere os dados do livro</h2>
+
+            <input type="hidden" id="bookId">
+
+            <div class="book-form-layout">
+                <div class="form-inputs">
+                    <div class="form-group">
+                        <label for="titulo">Título:</label>
+                        <input type="text" id="titulo" placeholder="Título do seu livro">
+                    </div>
+                    <div class="form-group">
+                        <label for="autor">Autor:</label>
+                        <input type="text" id="autor" placeholder="Autor(a) do seu livro">
+                    </div>
+                    <div class="form-group">
+                        <label for="editora">Editora e Ano:</label>
+                        <input type="text" id="editora" placeholder="Editora do seu livro">
+                    </div>
+                    <div class="form-group" style="position: relative;">
+                        <label for="genero">Gênero:</label>
+                        <div class="autocomplete-container">
+                            <input type="text" id="genero" placeholder="Digite ou selecione o gênero"
+                                autocomplete="off">
+                            <div id="generoResults" class="autocomplete-results"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="capa">URL da Capa:</label>
+                        <input type="text" id="capa" placeholder="https://exemplo.com/capa.jpg">
+                    </div>
+                </div>
+
+                <div class="form-preview-area">
+                    <div class="cover-preview-container" id="cover-container">
+                        <img id="previewCapa" src="" alt="Capa do Livro">
+                    </div>
+                    <div class="quantity-container">
+                        <div class="form-group">
+                            <label for="quantidade_total">Qtd. Total:</label>
+                            <input type="number" id="quantidade_total" min="0" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="quantidade_disponivel">Qtd. Disponível:</label>
+                            <input type="number" id="quantidade_disponivel" min="0" value="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <a href="home.html" class="btn-cancelar">Cancelar</a>
+                <button class="btn-submit" id="salvarAlteracoes">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg class="theme-icon" id="theme-icon" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+        </svg>
+    </div>
+
+    <footer>
+        <p>© DEV 2A - SENAI 9.14 | <span id="year"></span></p>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="auth-guard.js"></script>
+
+    <script>
+        async function inicializarApp() {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+            console.log("✅ Conectando em:", API_URL);
+        }
+
+        inicializarApp();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+
+    <script>
+        function showToast(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const icons = {
+                success: 'fa-circle-check',
+                error: 'fa-circle-xmark',
+                warning: 'fa-triangle-exclamation',
+                info: 'fa-circle-info'
+            };
+
+            const titles = {
+                success: 'Sucesso',
+                error: 'Erro',
+                warning: 'Atenção',
+                info: 'Informação'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]} toast-icon"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${titles[type]}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+
+            container.appendChild(toast);
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    toast.classList.add('removing');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+        }
+
+        tsParticles.load("tsparticles", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ["#f69697", "#ffdddd", "#ffe6e6"] },
+                shape: { type: "triangle" },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.2, sync: false } },
+                size: { value: 5, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+                links: { enable: false },
+                move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            detectRetina: true
+        });
+
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        function getParameterByName(name, url = window.location.href) {
+            name = name.replace(/[\[\]]/g, '\\$&');
+            const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+            const results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const quantidade_total = document.getElementById("quantidade_total");
+            const quantidade_disponivel = document.getElementById("quantidade_disponivel");
+
+            [quantidade_total, quantidade_disponivel].forEach(input => {
+                input.addEventListener('input', function () {
+                    if (this.value < 0) {
+                        this.value = 0;
+                    }
+                });
+            });
+
+            const id = getParameterByName("id");
+            if (!id) {
+                showToast("ID do livro não encontrado na URL.", "error");
+                setTimeout(() => window.location.href = "ReservaDeLivros.html", 2000);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${window.APP_CONFIG.API_URL}/livros/${id}`);
+                if (!response.ok) {
+                    showToast("Erro ao buscar dados do livro.", "error");
+                    return;
+                }
+                const livro = await response.json();
+
+                document.getElementById("bookId").value = livro.id;
+                document.getElementById("titulo").value = livro.titulo;
+                document.getElementById("autor").value = livro.autor;
+                document.getElementById("editora").value = livro.editora;
+                document.getElementById("genero").value = livro.genero;
+                document.getElementById("capa").value = livro.capa;
+                document.getElementById("quantidade_total").value = livro.quantidade_total;
+                document.getElementById("quantidade_disponivel").value = livro.quantidade_disponivel;
+
+                document.getElementById("capa").dispatchEvent(new Event('input'));
+
+            } catch (error) {
+                console.error("Erro ao carregar os dados do livro:", error);
+                showToast("Erro ao carregar os dados do livro.", "error");
+            }
+        });
+
+        document.getElementById("capa").addEventListener("input", (e) => {
+            const url = e.target.value.trim();
+            const preview = document.getElementById("previewCapa");
+            if (url) {
+                preview.src = url;
+                preview.style.display = "block";
+            } else {
+                preview.src = "";
+                preview.style.display = "none";
+            }
+        });
+
+        document.getElementById("salvarAlteracoes").addEventListener("click", async () => {
+            const id = document.getElementById("bookId").value;
+            const titulo = document.getElementById("titulo").value.trim();
+            const autor = document.getElementById("autor").value.trim();
+            const editora = document.getElementById("editora").value.trim();
+            const genero = document.getElementById("genero").value.trim();
+            const capa = document.getElementById("capa").value.trim();
+            const quantidade_total_val = parseInt(document.getElementById("quantidade_total").value);
+            const quantidade_disponivel_val = parseInt(document.getElementById("quantidade_disponivel").value);
+
+            if (!titulo || !autor || !editora || !genero || !capa) {
+                showToast("Preencha todos os campos!", "warning");
+                return;
+            }
+
+            if (isNaN(quantidade_total_val) || isNaN(quantidade_disponivel_val) || quantidade_total_val < 0 || quantidade_disponivel_val < 0) {
+                showToast("As quantidades devem ser números válidos e não podem ser negativas.", "warning");
+                return;
+            }
+
+            if (quantidade_disponivel_val > quantidade_total_val) {
+                showToast("A quantidade disponível não pode ser maior que a total.", "warning");
+                return;
+            }
+
+            const dados = {
+                titulo,
+                autor,
+                editora,
+                genero,
+                capa,
+                quantidade_total: quantidade_total_val,
+                quantidade_disponivel: quantidade_disponivel_val
+            };
+
+            try {
+                const response = await fetch(`${window.APP_CONFIG.API_URL}/livros/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados)
+                });
+
+                if (response.ok) {
+                    showToast("Livro atualizado com sucesso!", "success");
+                    setTimeout(() => window.location.href = "home.html", 2000);
+                } else {
+                    const erro = await response.json();
+                    showToast(erro.Mensagem || "Ocorreu um erro ao atualizar o livro.", "error");
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                showToast("Erro de conexão. Não foi possível atualizar o livro.", "error");
+            }
+        });
+        let generosCache = [];
+        let debounceTimer = null;
+
+        const generoInput = document.getElementById('genero');
+        const generoResults = document.getElementById('generoResults');
+
+
+        async function carregarGeneros() {
+            try {
+                const resp = await fetch(`${window.APP_CONFIG.API_URL}/generos2`);
+                const data = await resp.json();
+
+                if (Array.isArray(data)) {
+                    generosCache = data;
+                } else if (Array.isArray(data.generos)) {
+                    generosCache = data.generos;
+                } else {
+                    generosCache = [];
+                }
+            } catch (err) {
+                console.error("Erro ao carregar gêneros:", err);
+                generosCache = [];
+            }
+        }
+
+        carregarGeneros();
+
+        generoInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(() => {
+                const query = generoInput.value.trim().toLowerCase();
+
+                if (!query) {
+                    generoResults.classList.remove("show");
+                    generoResults.innerHTML = "";
+                    return;
+                }
+
+                const filtrados = generosCache.filter(g =>
+                    g.toLowerCase().includes(query)
+                );
+
+                if (filtrados.length === 0) {
+                    generoResults.innerHTML =
+                        `<div class="autocomplete-no-results">Nenhum gênero encontrado</div>`;
+                    generoResults.classList.add("show");
+                    return;
+                }
+
+                generoResults.innerHTML = filtrados
+                    .map(item => `<div class="autocomplete-item">${item}</div>`)
+                    .join("");
+
+                generoResults.classList.add("show");
+            }, 200);
+        });
+
+        generoResults.addEventListener('click', (e) => {
+            if (e.target.classList.contains("autocomplete-item")) {
+                generoInput.value = e.target.textContent;
+                generoResults.classList.remove("show");
+            }
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!generoInput.contains(e.target) && !generoResults.contains(e.target)) {
+                generoResults.classList.remove("show");
+            }
+        });
+    </script>
+
+    <script src="theme-manager.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca Virtual - Administrador</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+    <link rel="icon" type="image/png" href="Imagem/ico.png"> 
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      background-color: #f5f5f5;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    body.dark-mode {
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .admin-container {
+      background-color: #0a0a0a;
+    }
+    .theme-toggle {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.4);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(154, 25, 21, 0.6);
+    }
+
+    .theme-icon {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.5s ease;
+    }
+
+    .admin-container {
+      min-height: 100vh;
+      padding: 2rem 5%;
+      padding-top: 120px;
+      background-color: #f5f5f5;
+      transition: background-color 0.5s ease;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .page-title h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #9a1915;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-mode .page-title h1 {
+      color: #e30613;
+    }
+
+    .page-title p {
+      font-size: 1.1rem;
+      color: #666;
+      font-weight: 400;
+    }
+
+    body.dark-mode .page-title p {
+      color: #aaa;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .controls-bar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    body.dark-mode .controls-bar {
+      background: #1a1a1a;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 3rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+      background-color: #f8f8f8;
+    }
+
+    body.dark-mode .search-box input {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #9a1915;
+      background-color: white;
+    }
+
+    body.dark-mode .search-box input:focus {
+      background-color: #1a1a1a;
+      border-color: #e30613;
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+    }
+
+    .filter-select {
+      padding: 0.8rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #333;
+    }
+
+    body.dark-mode .filter-select {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .filter-select:hover {
+      border-color: #9a1915;
+    }
+
+    body.dark-mode .filter-select:hover {
+      border-color: #e30613;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #9a1915;
+    }
+
+    .add-button {
+      padding: 0.8rem 2rem;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .add-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .book-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    body.dark-mode .book-card {
+      background: #1a1a1a;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .book-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(154, 25, 21, 0.3);
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .book-cover::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="60" fill="rgba(255,255,255,0.1)">📚</text></svg>');
+      background-size: 80px;
+      opacity: 0.3;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .book-id-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      z-index: 2;
+      backdrop-filter: blur(5px);
+    }
+
+    .book-info {
+      padding: 1.5rem;
+    }
+
+    .book-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #9a1915;
+      margin-bottom: 0.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.dark-mode .book-title {
+      color: #e30613;
+    }
+
+    .book-author {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.3rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.dark-mode .book-author {
+      color: #aaa;
+    }
+
+    .book-genre {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background-color: #f5f5f5;
+      color: #9a1915;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    body.dark-mode .book-genre {
+      background-color: #262626;
+      color: #e30613;
+    }
+
+    .book-details {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+
+    body.dark-mode .book-details {
+      color: #999;
+    }
+
+
+    .book-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 0.6rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .edit-btn {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    body.dark-mode .edit-btn {
+      background-color: #262626;
+      color: #e0e0e0;
+    }
+
+    .edit-btn:hover {
+      background-color: #9a1915;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    body.dark-mode .delete-btn {
+      background-color: #262626;
+      color: #e0e0e0;
+    }
+
+    .delete-btn:hover {
+      background-color: #e30613;
+      color: white;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #999;
+      font-size: 1.2rem;
+    }
+
+    .no-results-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 200px;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    body.dark-mode .stat-card {
+      background: #1a1a1a;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(154, 25, 21, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #9a1915;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-mode .stat-number {
+      color: #e30613;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    body.dark-mode .stat-label {
+      color: #aaa;
+    }
+
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 1rem 3%;
+        padding-top: 100px;
+      }
+
+      .page-title h1 {
+        font-size: 2rem;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+
+      .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .theme-toggle {
+        right: 20px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .stats-bar {
+        gap: 1rem;
+      }
+
+      .stat-card {
+        min-width: 150px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <svg class="theme-icon" id="theme-icon" viewBox="0 0 24 24" fill="white">
+      <path
+        d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+    </svg>
+  </div>
+
+  <main class="admin-container">
+    <div class="page-title">
+      <h1>Painel do Administrador</h1>
+      <p>Gerencie a biblioteca virtual do SENAI 9.14</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-number" id="total-books">0</div>
+        <div class="stat-label">Total de Livros</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="total-authors">0</div>
+        <div class="stat-label">Autores Cadastrados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="total-genres">0</div>
+        <div class="stat-label">Gêneros Disponíveis</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="filtered-count">0</div>
+        <div class="stat-label">Livros Exibidos</div>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Pesquisar por título ou autor..." />
+      </div>
+
+      <select id="genre-filter" class="filter-select">
+        <option value="">Todos os Gêneros</option>
+      </select>
+
+      <a href="cadastrarlivros.html" class="add-button">
+        <span>➕</span>
+        Adicionar Livro
+      </a>
+    </div>
+
+    <div id="books-container" class="books-grid"></div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="config.js"></script>
+  <script src="auth-guard.js"></script>
+
+  <script>
+      async function inicializarApp() {
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+          console.log("✅ Conectando em:", API_URL);
+
+      }
+
+      inicializarApp();
+  </script>
+
+
+  <script src="/config.js"></script>
+  <script>
+
+      console.log("API:", window.APP_CONFIG.API_URL);
+    let allBooks = [];
+    let filteredBooks = [];
+
+    async function loadHTML(elementId, file) {
+      try {
+        const response = await fetch(file);
+        if (response.ok) {
+          document.getElementById(elementId).innerHTML = await response.text();
+        }
+      } catch (error) {
+        console.error(`Error loading ${file}:`, error);
+      }
+    }
+
+    loadHTML("header", "header.html");
+    loadHTML("footer", "footer.html");
+    
+    async function fetchBooks() {
+      try {
+        const response = await fetch(`${window.APP_CONFIG.API_URL}/listarLivros`);
+        if (!response.ok) throw new Error("Erro ao carregar os livros.");
+
+        const data = await response.json();
+        allBooks = data.Livros || [];
+        filteredBooks = [...allBooks];
+
+        updateStats();
+        populateGenreFilter();
+        displayBooks(filteredBooks);
+      } catch (error) {
+        console.error("Erro:", error);
+        displayNoResults("Erro ao carregar livros. Verifique sua conexão.");
+      }
+    }
+
+    function updateStats() {
+      const genres = [...new Set(allBooks.map(book => book.genero))];
+      const authors = [...new Set(allBooks.map(book => book.autor))];
+
+      document.getElementById('total-books').textContent = allBooks.length;
+      document.getElementById('total-authors').textContent = authors.length;
+      document.getElementById('total-genres').textContent = genres.length;
+      document.getElementById('filtered-count').textContent = filteredBooks.length;
+    }
+
+    function populateGenreFilter() {
+      const genreFilter = document.getElementById('genre-filter');
+      const genres = [...new Set(allBooks.map(book => book.genero))].sort();
+
+      genres.forEach(genre => {
+        const option = document.createElement('option');
+        option.value = genre;
+        option.textContent = genre;
+        genreFilter.appendChild(option);
+      });
+    }
+
+    function displayBooks(books) {
+      const container = document.getElementById('books-container');
+
+      if (books.length === 0) {
+        displayNoResults();
+        return;
+      }
+
+      container.innerHTML = books.map(book => {
+        const bookCover = book.capa && book.capa.trim() !== ''
+          ? `<img src="${book.capa}" alt="${book.titulo}" onerror="this.onerror=null; this.src='Imagens/capalivro.png';">`
+          : `<img src="Imagens/capalivro.png" alt="${book.titulo}">`;
+
+        return `
+        <div class="book-card">
+          <div class="book-cover">
+            <div class="book-id-badge">ID: ${book.id}</div>
+            ${bookCover}
+          </div>
+          <div class="book-info">
+            <h3 class="book-title">${book.titulo}</h3>
+            <p class="book-author">✍️ ${book.autor}</p>
+            <span class="book-genre">${book.genero}</span>
+            <p class="book-details">
+              ${book.editora}
+            </p>
+            <div class="book-actions">
+              <button class="action-btn edit-btn" onclick="editBook(${book.id})">
+                ✏️ Editar
+              </button>
+              <button class="action-btn delete-btn" onclick="deleteBook(${book.id})">
+                🗑️ Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+    function displayNoResults(message = "Nenhum livro encontrado.") {
+      const container = document.getElementById('books-container');
+      container.innerHTML = `
+        <div class="no-results">
+          <div class="no-results-icon">📚</div>
+          <p>${message}</p>
+        </div>
+      `;
+    }
+
+    function filterBooks() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const selectedGenre = document.getElementById('genre-filter').value;
+
+      filteredBooks = allBooks.filter(book => {
+        const matchesSearch =
+          book.titulo.toLowerCase().includes(searchTerm) ||
+          book.autor.toLowerCase().includes(searchTerm);
+
+        const matchesGenre = !selectedGenre || book.genero === selectedGenre;
+
+        return matchesSearch && matchesGenre;
+      });
+
+      updateStats();
+      displayBooks(filteredBooks);
+    }
+
+    function editBook(id) {
+      window.location.href = `editarLivro.html?id=${id}`;
+    }
+
+    async function deleteBook(id) {
+      if (!confirm("Você realmente deseja excluir este livro?")) return;
+
+      try {
+        const response = await fetch(`${window.APP_CONFIG.API_URL}/livros/${id}`, {
+          method: "DELETE"
+        });
+
+        if (response.ok) {
+          alert("Livro excluído com sucesso!");
+          fetchBooks();
+        } else {
+          alert("Erro ao excluir livro.");
+        }
+      } catch (error) {
+        console.error("Erro ao excluir:", error);
+        alert("Erro ao excluir livro.");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchBooks();
+
+      document.getElementById('search-input').addEventListener('input', filterBooks);
+      document.getElementById('genre-filter').addEventListener('change', filterBooks);
+    });
+  </script>
+  <script>
+    const PAGINA_ATUAL = "home";
+    
+  </script>
+  
+  <script src="header.js"></script>
+  
+  <script src="theme-manager.js"></script>
+</body>
+
+</html>

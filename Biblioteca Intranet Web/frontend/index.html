@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Virtual - SENAI 9.14</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="Imagem/ico.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        body.dark-mode {
+            background-color: #0a0a0a;
+            color: #f5f5f5;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-top {
+            background-color: #e30613;
+            height: 8px;
+        }
+
+        .header-main {
+            background-color: #9a1915;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo img {
+            width: 350px;
+            height: auto;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-register {
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            background-color: white;
+            color: #9a1915;
+        }
+
+        .btn-register:hover {
+            background-color: transparent;
+            color: white;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(154, 25, 21, 0.4);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(154, 25, 21, 0.6);
+        }
+
+        .theme-icon {
+            width: 30px;
+            height: 30px;
+            transition: transform 0.5s ease;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #7a1512 0%, #c41018 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        #tsparticles-hero,
+        #tsparticles-download,
+        #tsparticles-funcionalidades {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            animation: wave 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .hero-content {
+            text-align: center;
+            color: white;
+            z-index: 1;
+            padding: 2rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #9a1915;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: white;
+            color: #9a1915;
+        }
+
+        .floating-book {
+            position: absolute;
+            opacity: 0.15;
+            animation: float 6s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.6));
+            z-index: 1;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        .book-1 {
+            top: 10%;
+            left: 5%;
+            width: 80px;
+            animation-delay: 0s;
+        }
+
+        .book-2 {
+            top: 30%;
+            right: 10%;
+            width: 100px;
+            animation-delay: 1s;
+        }
+
+        .book-3 {
+            bottom: 20%;
+            left: 15%;
+            width: 70px;
+            animation-delay: 2s;
+        }
+
+        .book-4 {
+            top: 50%;
+            left: 8%;
+            width: 90px;
+            animation-delay: 1.5s;
+        }
+
+        .book-5 {
+            top: 70%;
+            right: 5%;
+            width: 75px;
+            animation-delay: 0.8s;
+        }
+
+        .book-6 {
+            top: 15%;
+            right: 25%;
+            width: 85px;
+            animation-delay: 2.5s;
+        }
+
+        .book-7 {
+            bottom: 30%;
+            right: 20%;
+            width: 95px;
+            animation-delay: 1.2s;
+        }
+
+        .book-8 {
+            top: 60%;
+            left: 30%;
+            width: 65px;
+            animation-delay: 3s;
+        }
+
+        section {
+            padding: 11rem 5%;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: 4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #9a1915;
+        }
+
+        body.dark-mode .section-title {
+            color: #ffffff;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #9a1915;
+        }
+
+        body.dark-mode .about-text h3 {
+            color: #e30613;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .about-image {
+            position: relative;
+            height: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .about-image iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            border-radius: 20px;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.1);
+        }
+
+        .location-section {
+            background-color: #f5f5f5;
+        }
+
+        body.dark-mode .location-section {
+            background-color: black;
+        }
+
+        .location-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .location-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        body.dark-mode .location-info {
+            background: #262626;
+        }
+
+        .location-info h3 {
+            font-size: 1.5rem;
+            color: #9a1915;
+            margin-bottom: 1rem;
+        }
+
+        body.dark-mode .location-info h3 {
+            color: #e30613;
+        }
+
+        .location-info p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        body.dark-mode .location-info p {
+            color: #aaa;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 450px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .funcionalidades {
+            background: linear-gradient(135deg, #7a1512, #c41018);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body.dark-mode .funcionalidades {
+            background-color: black;
+            color: #f5f5f5;
+        }
+
+        .funcionalidades .section-title,
+        .funcionalidades .funcionalidades-grid {
+            position: relative;
+            z-index: 1;
+        }
+
+        .funcionalidades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode .feature-card {
+            background: black;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(154, 25, 21, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #9a1915;
+        }
+
+        body.dark-mode .feature-card h3 {
+            color: #e30613;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        body.dark-mode .feature-card p {
+            color: #aaa;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .team-member {
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .member-photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            overflow: hidden;
+            border: 5px solid #9a1915;
+            box-shadow: 0 8px 20px rgba(154, 25, 21, 0.3);
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .member-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .team-member h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #9a1915;
+        }
+
+        body.dark-mode .team-member h3 {
+            color: #e30613;
+        }
+
+        .team-member p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        body.dark-mode .team-member p {
+            color: #aaa;
+        }
+
+        .tccs-section {
+            background-color: #f5f5f5;
+        }
+
+        body.dark-mode .tccs-section {
+            background-color: #1a1a1a;
+        }
+
+        .tccs-intro {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            text-align: center;
+        }
+
+        .tccs-intro p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #666;
+        }
+
+        body.dark-mode .tccs-intro p {
+            color: #aaa;
+        }
+
+        .tccs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tcc-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            opacity: 1;
+            max-height: 1000px;
+        }
+
+        .tcc-card.hidden {
+            opacity: 0;
+            max-height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body.dark-mode .tcc-card {
+            background: #1a1a1a;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .tcc-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(154, 25, 21, 0.25);
+        }
+
+        .tcc-header {
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            padding: 1.5rem;
+            color: white;
+            position: relative;
+        }
+
+        .tcc-header::before {
+            content: '📄';
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            font-size: 5rem;
+            opacity: 0.15;
+        }
+
+        .tcc-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 0.5rem;
+        }
+
+        .tcc-course {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .tcc-body {
+            padding: 1.5rem;
+        }
+
+        .tcc-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        body.dark-mode .tcc-description {
+            color: #aaa;
+        }
+
+        .tcc-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tcc-meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        body.dark-mode .tcc-meta-item {
+            color: #aaa;
+        }
+
+        .tcc-meta-item strong {
+            color: #9a1915;
+        }
+
+        body.dark-mode .tcc-meta-item strong {
+            color: #e30613;
+        }
+
+        .tcc-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tcc-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+        }
+
+        .tcc-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+        }
+
+        .tcc-contact {
+            font-size: 0.85rem;
+            color: #999;
+            text-align: center;
+            font-style: italic;
+        }
+
+        body.dark-mode .tcc-contact {
+            color: #666;
+        }
+
+        .show-more-btn {
+            display: block;
+            margin: 3rem auto 0;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, #9a1915, #e30613);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(154, 25, 21, 0.3);
+        }
+
+        .show-more-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(154, 25, 21, 0.5);
+        }
+
+        .download-section {
+            background: linear-gradient(135deg, #7a1512, #c41018);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-section .section-title {
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-content {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .download-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background-color: white;
+            color: #9a1915;
+            padding: 1.2rem 3rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        footer {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            color: #f0f0f0;
+            margin-top: auto;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(227, 6, 19, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(227, 6, 19, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .footer-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: translateY(-99%);
+        }
+
+        .footer-wave svg {
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 60px;
+            fill: #1a1a1a;
+        }
+
+        .footer-container {
+            position: relative;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 4rem 6% 2rem;
+            z-index: 1;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+            color: #e30613;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-logo img {
+            height: 60px;
+            filter: drop-shadow(0 2px 8px rgba(227, 6, 19, 0.3));
+        }
+
+        .footer-logo div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .logo-subtitle {
+            font-size: 0.9rem;
+            color: #e30613;
+            font-weight: 600;
+        }
+
+        .footer-description {
+            font-size: 0.95rem;
+            color: #b0b0b0;
+            line-height: 1.7;
+            margin-top: 1rem;
+        }
+
+        .footer-list {
+            list-style: none;
+        }
+
+        .footer-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: #d0d0d0;
+            line-height: 1.6;
+        }
+
+        .footer-list li svg {
+            flex-shrink: 0;
+            margin-top: 3px;
+            fill: #e30613;
+        }
+
+        .footer-list a {
+            color: #d0d0d0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-list a:hover {
+            color: #e30613;
+        }
+
+        .social-description {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .footer-social-icons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .footer-social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1.2rem;
+            border-radius: 12px;
+            background: rgba(227, 6, 19, 0.1);
+            border: 1px solid rgba(227, 6, 19, 0.2);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-social-icons a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(227, 6, 19, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .footer-social-icons a:hover::before {
+            left: 100%;
+        }
+
+        .footer-social-icons a:hover {
+            transform: translateY(-3px);
+            background: rgba(227, 6, 19, 0.2);
+            border-color: #e30613;
+            box-shadow: 0 8px 20px rgba(227, 6, 19, 0.3);
+        }
+
+        .footer-social-icons svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .social-label {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+        }
+
+        .footer-credits {
+            text-align: center;
+        }
+
+        .footer-credits p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-credits strong {
+            color: #e30613;
+            font-weight: 600;
+        }
+
+        .developers {
+            font-size: 0.85rem !important;
+            color: #888 !important;
+        }
+
+        @media (max-width: 1133px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .footer-section {
+                text-align: center;
+            }
+
+            .footer-logo {
+                justify-content: center;
+            }
+
+            .footer-list li {
+                justify-content: center;
+            }
+
+            .footer-social-icons {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-container {
+                padding: 3rem 5% 1.5rem;
+            }
+
+            .footer-top {
+                gap: 2.5rem;
+            }
+
+            .footer-logo img {
+                height: 50px;
+            }
+
+            .logo-title {
+                font-size: 1.3rem;
+            }
+
+            .footer-social-icons {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-wave svg {
+                height: 40px;
+            }
+        }
+
+
+        @media (max-width: 1200px) {
+            .logo img {
+                width: 280px;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .header-main {
+                padding: 1rem 3%;
+            }
+
+            .logo img {
+                width: 250px;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-links a {
+                font-size: 0.85rem;
+            }
+
+            .btn-register {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-main {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 3%;
+            }
+
+            .logo {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .logo img {
+                width: 220px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.8rem;
+            }
+
+            .nav-links a {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-register {
+                width: auto;
+                padding: 0.5rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .logo img {
+                width: 180px;
+            }
+
+            .nav-links {
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .btn-register {
+                font-size: 0.8rem;
+                padding: 0.5rem 1.2rem;
+            }
+        }
+
+
+        @media (max-width: 992px) {
+            .section-title {
+                font-size: 3rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 6rem 5%;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .hero p {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tccs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            section {
+                padding: 4rem 3%;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .about-text h3 {
+                font-size: 1.5rem;
+            }
+
+            .about-text p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-top"></div>
+        <div class="header-main">
+            <div class="logo">
+                <img src="Imagem/senai_todo.png" alt="SENAI Logo" />
+            </div>
+            <nav class="nav-links">
+                <a href="#about">Sobre</a>
+                <a href="#localizacao">Localização</a>
+                <a href="#funcionalidades">Funcionalidades</a>
+                <a href="#team">Equipe</a>
+                <a href="#tccs">TCCs</a>
+                <a href="#download">Download</a>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn-register">Sou Administrador</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <svg class="theme-icon" id="theme-icon" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+        </svg>
+    </div>
+
+    <section class="hero">
+        <div id="tsparticles-hero"></div>
+        <svg class="floating-book book-1" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-2" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-3" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-4" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-5" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-6" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-7" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-8" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+
+        <div class="hero-content">
+            <h1>Biblioteca Virtual</h1>
+            <p>Seu acesso facilitado ao conhecimento do SENAI 9.14</p>
+            <div class="hero-buttons">
+                <a href="#download" class="btn-primary">Baixar Aplicativo</a>
+                <a href="#about" class="btn-secondary">Saiba Mais</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <h2 class="section-title">Quem Somos</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>Estudantes DEV 2A - SENAI 9.14</h3>
+                <p>Somos estudantes do curso técnico de Desenvolvimento de Sistemas da instituição SENAI Santo
+                    Paschoal Crepaldi, unidade 9.14.</p>
+                <p>Nosso projeto consiste na criação de um aplicativo de biblioteca virtual inovador, desenvolvido para
+                    facilitar o acesso aos recursos literários e TCCs da nossa unidade.</p>
+                <p>Com foco em acessibilidade, inclusão e tecnologia, buscamos transformar a experiência de leitura e
+                    pesquisa dos estudantes do SENAI.</p>
+            </div>
+            <div class="about-image">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/HzTSur2tirI"
+                    title="Vídeo da Equipe de Desenvolvimento" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <section id="localizacao" class="location-section">
+        <h2 class="section-title">Nossa Localização</h2>
+        <div class="location-content">
+            <div class="location-info">
+                <h3>SENAI Santo Paschoal Crepaldi - Unidade 9.14</h3>
+                <p><strong>Endereço:</strong> Rua Santo Paschoal Crepaldi, 601 - Bongue, Presidente Prudente - SP,
+                    19060-080</p>
+                <p><strong>Telefone:</strong> (18) 3908-6700</p>
+                <p><strong>Horário de Funcionamento:</strong> Segunda a Sexta, das 7h às 22h</p>
+            </div>
+            <div class="map-container">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3695.832485697385!2d-51.40877082476946!3d-22.125824879716195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9493f5e13e13e13e%3A0x3e3e3e3e3e3e3e3e!2sRua%20Santo%20Paschoal%20Crepaldi%2C%20601%20-%20Bongue%2C%20Presidente%20Prudente%20-%20SP%2C%2019060-080!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
+                    allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <section id="funcionalidades" class="funcionalidades">
+        <div id="tsparticles-funcionalidades"></div>
+        <svg class="floating-book book-1" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-2" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-3" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-4" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-5" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <h2 class="section-title" style="color: #ffffff;">Funcionalidades</h2>
+        <div class="funcionalidades-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Estante Virtual</h3>
+                <p>Acesse gêneros literários, informações detalhadas dos livros, disponibilidade em tempo real e filtros
+                    avançados de pesquisa.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎓</div>
+                <h3>Museu de TCCs</h3>
+                <p>Explore TCCs organizados por curso, faça download de arquivos e utilize filtros para encontrar
+                    exatamente o que precisa.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔖</div>
+                <h3>Minha Biblioteca</h3>
+                <p>Gerencie suas reservas, favoritos e lista de leitura de TCCs em um só lugar, com total praticidade.
+                </p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Tempo Real</h3>
+                <p>Monitore empréstimos e devoluções em tempo real com notificações instantâneas.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Avaliações</h3>
+                <p>Favorite e avalie livros, compartilhe sua opinião e descubra novas leituras recomendadas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="team" class="team-section ">
+        <h2 class="section-title">Nossa Equipe</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-photo"><img src="Imagem/duda.jpg" alt="Eduarda Silva Scaliz" /></div>
+                <h3>Eduarda Silva Scaliz</h3>
+                <p>Back-End & Database</p>
+            </div>
+            <div class="team-member">
+                <div class="member-photo"><img src="Imagem/gi.jpg" alt="Giovanna Ferrucci Piquione" /></div>
+                <h3>Giovanna Ferrucci Piquione</h3>
+                <p>Test & Quality Assurance</p>
+            </div>
+            <div class="team-member">
+                <div class="member-photo"><img src="Imagem/mavi.jpg" alt="Maria Vitória Sales dos Santos" /></div>
+                <h3>Maria Vitória Sales dos Santos</h3>
+                <p>Design & Interface</p>
+            </div>
+            <div class="team-member">
+                <div class="member-photo"><img src="Imagem/nick.jpg" alt="Nicole Barnack Molinari" /></div>
+                <h3>Nicole Barnack Molinari</h3>
+                <p>Design & Front-End</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tccs" class="tccs-section ">
+        <h2 class="section-title">TCCs Disponíveis</h2>
+        <div class="tccs-intro">
+            <p>Conheça os projetos desenvolvidos pelos alunos do SENAI Santo Paschoal Crepaldi. Aqui você encontra os
+                TCCs que refletem a inovação e a prática profissional aplicadas durante os cursos.</p>
+        </div>
+        <div class="tccs-grid" id="tccs-container">
+        </div>
+        <button class="show-more-btn" id="show-more-btn" onclick="toggleTCCs()">
+            Ver mais TCCs
+        </button>
+    </section>
+
+    <section id="download" class="download-section">
+        <div id="tsparticles-download"></div>
+        <svg class="floating-book book-1" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-2" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-3" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-4" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+        <svg class="floating-book book-5" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
+        </svg>
+
+        <h2 class="section-title">Baixe Agora</h2>
+        <div class="download-content">
+            <span>
+                <p>Faça o download do aplicativo e comece a explorar nossa biblioteca virtual agora mesmo!</p>
+            </span>
+            <a href="#" class="download-btn">
+                <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                </svg>
+                Baixar APK
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-wave">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path
+                    d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z">
+                </path>
+            </svg>
+        </div>
+
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-section footer-logo-section">
+                    <div class="footer-logo">
+                        <img src="Imagem/senai.png" alt="Logo SENAI">
+                        <div>
+                            <span class="logo-title">Biblioteca Virtual</span>
+                            <span class="logo-subtitle">SENAI 9.14</span>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        Promovendo conhecimento e inovação através de recursos digitais acessíveis a toda comunidade
+                        acadêmica.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor"
+                                d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
+                        </svg>
+                        Contato Institucional
+                    </h3>
+                    <ul class="footer-list">
+                        <li>
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor"
+                                    d="M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5M12,2A7,7 0 0,0 5,9C5,14.25 12,22 12,22C12,22 19,14.25 19,9A7,7 0 0,0 12,2Z" />
+                            </svg>
+                            <span>SENAI 9.14 Santo Paschoal Crepaldi</span>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor"
+                                    d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
+                            </svg>
+                            <a href="mailto:biblioteca@senai914.edu.br">biblioteca@senai914.edu.br</a>
+                        </li>
+                        <li>
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path fill="currentColor"
+                                    d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z" />
+                            </svg>
+                            <a href="tel:+551839028500">(18) 3902-8500</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor"
+                                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,10.5A1.5,1.5 0 0,0 10.5,12A1.5,1.5 0 0,0 12,13.5A1.5,1.5 0 0,0 13.5,12A1.5,1.5 0 0,0 12,10.5Z" />
+                        </svg>
+                        Redes Oficiais
+                    </h3>
+                    <p class="social-description">Siga-nos nas redes sociais e fique por dentro das novidades</p>
+                    <div class="footer-social-icons">
+                        <a href="https://www.facebook.com/senaisp.prudente/?locale=pt_BR" title="Facebook"
+                            target="_blank" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                            </svg>
+                            <span class="social-label">Facebook</span>
+                        </a>
+
+                        <a href="https://www.instagram.com/senaiprudente/" title="Instagram" target="_blank"
+                            aria-label="Instagram">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 3.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm6.406-1.515a1.44 1.44 0 11-2.881 0 1.44 1.44 0 012.881 0z" />
+                            </svg>
+                            <span class="social-label">Instagram</span>
+                        </a>
+
+                        <a href="https://www.linkedin.com/school/senaisp/posts/?feedView=all" title="LinkedIn"
+                            target="_blank" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
+                            </svg>
+                            <span class="social-label">LinkedIn</span>
+                        </a>
+
+                        <a href="https://www.youtube.com/channel/UCzqd0VpWU_w4BKwmSvFdieQ" title="YouTube"
+                            target="_blank" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                            </svg>
+                            <span class="social-label">YouTube</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-credits">
+                    <p>
+                        © <span id="current-year">2025</span> <strong>Biblioteca Virtual - SENAI 9.14</strong>. Todos os
+                        direitos reservados.
+                    </p>
+                    <p class="developers">
+                        Desenvolvido com
+                        <svg viewBox="0 0 24 24" width="14" height="14"
+                            style="display: inline; vertical-align: middle; fill: #e30613;">
+                            <path
+                                d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z" />
+                        </svg>
+                        por Eduarda Scaliz, Giovanna Ferrucci, Maria Vitória, Nicole Barnack.
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="config.js"></script>
+
+    <script>
+        async function inicializarApp() {
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+            console.log("✅ Conectando em:", API_URL);
+
+        }
+
+        inicializarApp();
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="/config.js"></script>
+    <script>
+
+        console.log("API:", window.APP_CONFIG.API_URL);
+        const ThemeManager = {
+            STORAGE_KEY: 'biblioteca-virtual-theme',
+
+            init() {
+                const savedTheme = localStorage.getItem(this.STORAGE_KEY) || 'light';
+
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    document.body.classList.add('dark-mode');
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        this.updateIcon();
+                    });
+                } else {
+                    this.updateIcon();
+                }
+            },
+
+            toggle() {
+                const isDark = document.body.classList.toggle('dark-mode');
+                document.documentElement.classList.toggle('dark-mode', isDark);
+
+                localStorage.setItem(this.STORAGE_KEY, isDark ? 'dark' : 'light');
+
+                this.updateIcon();
+
+                window.dispatchEvent(new CustomEvent('themeChanged', {
+                    detail: { theme: isDark ? 'dark' : 'light' }
+                }));
+            },
+
+            updateIcon() {
+                const icon = document.getElementById('theme-icon');
+                if (!icon) return;
+
+                const isDark = document.body.classList.contains('dark-mode');
+
+                if (isDark) {
+                    icon.innerHTML = `<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z" fill="white"/>`;
+                } else {
+                    icon.innerHTML = `
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" fill="white"/>
+                    `;
+                }
+            },
+
+            getCurrentTheme() {
+                return document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            }
+        };
+
+        ThemeManager.init();
+
+        function toggleTheme() {
+            ThemeManager.toggle();
+        }
+
+        let allTCCs = [];
+        let showingAll = false;
+        const INITIAL_DISPLAY = 4;
+
+        async function fetchTCCs() {
+            try {
+                const response = await fetch(`${window.APP_CONFIG.API_URL}/listarTCCs`);
+                if (!response.ok) throw new Error("Erro ao carregar os TCCs.");
+
+                const data = await response.json();
+                allTCCs = data.tcc || [];
+                displayTCCs();
+            } catch (error) {
+                console.error("Erro:", error);
+                document.getElementById('tccs-container').innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #999;">
+                        <p style="font-size: 1.2rem;">Erro ao carregar TCCs. Verifique sua conexão.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayTCCs() {
+            const container = document.getElementById('tccs-container');
+            const btn = document.getElementById('show-more-btn');
+
+            if (allTCCs.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #999;">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">📄</div>
+                        <p style="font-size: 1.2rem;">Nenhum TCC disponível no momento.</p>
+                    </div>
+                `;
+                btn.style.display = 'none';
+                return;
+            }
+
+            if (allTCCs.length <= INITIAL_DISPLAY) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'block';
+            }
+
+            container.innerHTML = allTCCs.map((tcc, index) => `
+                <div class="tcc-card ${index >= INITIAL_DISPLAY && !showingAll ? 'hidden' : ''}">
+                    <div class="tcc-header">
+                        <h3 class="tcc-title">${tcc.titulo}</h3>
+                        <p class="tcc-course">${tcc.curso}</p>
+                    </div>
+                    <div class="tcc-body">
+                        <p class="tcc-description">${tcc.descricao || 'Trabalho de Conclusão de Curso desenvolvido na unidade SENAI Santo Paschoal Crepaldi.'}</p>
+                        <div class="tcc-meta">
+                            <div class="tcc-meta-item">
+                                <span>👤</span>
+                                <strong>Autor:</strong>
+                                <span>${tcc.autor || 'Não informado'}</span>
+                            </div>
+                            <div class="tcc-meta-item">
+                                <span>📅</span>
+                                <strong>Ano:</strong>
+                                <span>${tcc.ano}</span>
+                            </div>
+                        </div>
+                        <div class="tcc-actions">
+                            <a href="${tcc.link}" target="_blank" class="tcc-link">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+                                </svg>
+                                Visualizar TCC no Google Drive
+                            </a>
+                            <p class="tcc-contact">Para solicitar documentos complementares sobre este projeto, entre em contato com a escola.</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleTCCs() {
+            showingAll = !showingAll;
+            const btn = document.getElementById('show-more-btn');
+            const cards = document.querySelectorAll('.tcc-card');
+
+            cards.forEach((card, index) => {
+                if (index >= INITIAL_DISPLAY) {
+                    if (showingAll) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+
+            btn.textContent = showingAll ? 'Ver menos TCCs' : 'Ver mais TCCs';
+
+            if (!showingAll) {
+                document.getElementById('tccs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        tsParticles.load("tsparticles-hero", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ["#f69697", "#ffdddd", "#ffe6e6"] },
+                shape: { type: "triangle" },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.2, sync: false } },
+                size: { value: 5, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+                links: { enable: false },
+                move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            detectRetina: true,
+        });
+
+        tsParticles.load("tsparticles-funcionalidades", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ["#f69697", "#ffdddd", "#ffe6e6"] },
+                shape: { type: "triangle" },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.2, sync: false } },
+                size: { value: 5, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+                links: { enable: false },
+                move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            detectRetina: true,
+        });
+
+        tsParticles.load("tsparticles-download", {
+            fpsLimit: 60,
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ["#f69697", "#ffdddd", "#ffe6e6"] },
+                shape: { type: "triangle" },
+                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 0.8, opacity_min: 0.2, sync: false } },
+                size: { value: 5, random: true, anim: { enable: true, speed: 3, size_min: 0.1, sync: false } },
+                links: { enable: false },
+                move: { enable: true, speed: 1, direction: "none", random: true, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            detectRetina: true,
+        });
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
+            } else {
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        fetchTCCs();
+
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>

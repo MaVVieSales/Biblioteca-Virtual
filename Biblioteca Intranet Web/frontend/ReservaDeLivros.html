@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca Virtual - Reservas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+  <link rel="icon" type="image/png" href="Imagem/ico.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      background-color: #f5f5f5;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    body.dark-mode {
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.4);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(154, 25, 21, 0.6);
+    }
+
+    .theme-icon {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.5s ease;
+    }
+
+    .admin-container {
+      min-height: 100vh;
+      padding: 2rem 5%;
+      padding-top: 120px;
+      background-color: #f5f5f5;
+      transition: background-color 0.5s ease;
+    }
+
+    body.dark-mode .admin-container {
+      background-color: #0a0a0a;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .page-title h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #9a1915;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-mode .page-title h1 {
+      color: #e30613;
+    }
+
+    .page-title p {
+      font-size: 1.1rem;
+      color: #666;
+      font-weight: 400;
+    }
+
+    body.dark-mode .page-title p {
+      color: #aaa;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .floating-nav {
+      position: fixed;
+      right: 30px;
+      bottom: 110px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 950;
+    }
+
+
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translate(20px, -50%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(0, -50%);
+      }
+    }
+
+    .nav-anchor {
+      width: 60px;
+      height: 60px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    body.dark-mode .nav-anchor {
+      background: #1a1a1a;
+    }
+
+    .nav-anchor:hover {
+      transform: scale(1.15);
+      box-shadow: 0 6px 25px rgba(154, 25, 21, 0.3);
+    }
+
+    .nav-anchor.active {
+      background: linear-gradient(135deg, #9a1915, #e30613);
+    }
+
+    .nav-anchor.active .nav-icon {
+      filter: brightness(0) invert(1);
+    }
+
+    .add-button {
+      padding: 0.8rem 2rem;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .add-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+    }
+
+    .nav-icon {
+      font-size: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .nav-tooltip {
+      position: absolute;
+      right: 75px;
+      background: #333;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    body.dark-mode .nav-tooltip {
+      background: #e0e0e0;
+      color: #333;
+    }
+
+    .nav-anchor:hover .nav-tooltip {
+      opacity: 1;
+    }
+
+    .section {
+      margin-bottom: 4rem;
+      scroll-margin-top: 100px;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    body.dark-mode .section-header {
+      background: #1a1a1a;
+    }
+
+    .section-title-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #9a1915;
+    }
+
+    body.dark-mode .section-title {
+      color: #e30613;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .section-search {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+      max-width: 700px;
+      flex-wrap: nowrap;
+    }
+
+    .section-search input[type="text"] {
+      flex: 1;
+      min-width: 180px;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      transition: 0.3s;
+    }
+
+    .section-search input[type="text"]:focus {
+      border-color: #9a1915;
+      box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.2);
+      outline: none;
+    }
+
+    .section-search .add-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: #fff;
+      font-weight: 700;
+      border-radius: 30px;
+      padding: 0.6rem 1.2rem;
+      text-decoration: none;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+
+    .section-search .add-button:hover {
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      transform: translateY(-2px);
+    }
+
+
+    @media (max-width: 768px) {
+      .section-search {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.8rem;
+        max-width: 100%;
+      }
+
+      .section-search input[type="text"] {
+        width: 100%;
+      }
+
+      .section-search .add-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .search-select {
+      padding: 0.8rem;
+      padding-left: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f8f8f8;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 140px;
+    }
+
+    body.dark-mode .search-select {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .search-select:focus {
+      outline: none;
+      border-color: #9a1915;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+      background-color: #f8f8f8;
+    }
+
+    body.dark-mode .search-input {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #9a1915;
+      background-color: white;
+    }
+
+    body.dark-mode .search-input:focus {
+      background-color: #1a1a1a;
+      border-color: #e30613;
+    }
+
+    .section-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      min-height: 200px;
+    }
+
+    body.dark-mode .section-content {
+      background: #1a1a1a;
+    }
+
+    .carousel-container {
+      position: relative;
+      padding: 0 60px;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-btn:hover {
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+    }
+
+    .carousel-btn.prev {
+      left: 0;
+    }
+
+    .carousel-btn.next {
+      right: 0;
+    }
+
+    .carousel-wrapper {
+      overflow: hidden;
+      border-radius: 15px;
+    }
+
+    .carousel {
+      display: flex;
+      gap: 1.5rem;
+      transition: transform 0.4s ease;
+      padding: 1rem 0;
+    }
+
+    .reservation-card {
+      min-width: 300px;
+      max-width: 300px;
+      background: #f8f8f8;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      transition: all 0.4s ease;
+    }
+
+    body.dark-mode .reservation-card {
+      background: #262626;
+    }
+
+    .reservation-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(154, 25, 21, 0.2);
+    }
+
+    .card-cover {
+      position: relative;
+      height: 180px;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .status-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      backdrop-filter: blur(5px);
+    }
+
+    .status-badge.aguardando {
+      background: rgba(255, 193, 7, 0.9);
+      color: #333;
+    }
+
+    .card-info {
+      padding: 1.5rem;
+    }
+
+    .card-book-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #9a1915;
+      margin-bottom: 0.8rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    body.dark-mode .card-book-title {
+      color: #e30613;
+    }
+
+    .card-detail {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    body.dark-mode .card-detail {
+      color: #aaa;
+    }
+
+    .card-detail strong {
+      color: #333;
+    }
+
+    body.dark-mode .card-detail strong {
+      color: #e0e0e0;
+    }
+
+    .card-action {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    body.dark-mode .card-action {
+      border-top-color: #444;
+    }
+
+    .action-button {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+    }
+
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+    }
+
+    .list-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .list-table thead {
+      background: linear-gradient(135deg, #9a1915, #e30613);
+    }
+
+    .list-table th {
+      padding: 1rem;
+      text-align: left;
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .list-table tbody tr {
+      border-bottom: 1px solid #e0e0e0;
+      transition: background-color 0.2s ease;
+    }
+
+    body.dark-mode .list-table tbody tr {
+      border-bottom-color: #333;
+    }
+
+    .list-table tbody tr:hover {
+      background-color: #f8f8f8;
+    }
+
+    body.dark-mode .list-table tbody tr:hover {
+      background-color: #262626;
+    }
+
+    .list-table td {
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .book-thumb {
+      width: 50px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-button {
+      padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .table-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(154, 25, 21, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #999;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-subtext {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease;
+    }
+
+    body.dark-mode .modal-content {
+      background: #1a1a1a;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #9a1915;
+    }
+
+    body.dark-mode .modal-title {
+      color: #e30613;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+      transition: color 0.3s ease;
+    }
+
+    body.dark-mode .close-modal {
+      color: #aaa;
+    }
+
+    .close-modal:hover {
+      color: #e30613;
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    body.dark-mode .form-group label {
+      color: #e0e0e0;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: border-color 0.3s ease;
+    }
+
+    body.dark-mode .form-group input {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #9a1915;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-btn.confirm {
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+    }
+
+    .modal-btn.confirm:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+    }
+
+    .modal-btn.cancel {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    body.dark-mode .modal-btn.cancel {
+      background: #262626;
+      color: #e0e0e0;
+    }
+
+    .modal-btn.cancel:hover {
+      background: #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+      .theme-toggle {
+        right: 20px;
+        bottom: 20px;
+      }
+
+      .floating-nav {
+        right: 20px;
+        bottom: 90px;
+        gap: 0.8rem;
+      }
+    }
+
+
+    .nav-anchor {
+      width: 50px;
+      height: 50px;
+
+    }
+
+    .nav-icon {
+      font-size: 1.3rem;
+      text-align: center;
+    }
+
+
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 1rem 3%;
+        padding-top: 100px;
+      }
+
+      .page-title h1 {
+        font-size: 2rem;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .section-search {
+        max-width: 100%;
+        flex-direction: column;
+      }
+
+      .search-select {
+        min-width: 100%;
+      }
+
+      .carousel-container {
+        padding: 0 50px;
+      }
+
+      .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+
+      .reservation-card {
+        min-width: 250px;
+        max-width: 250px;
+      }
+
+      .section-content {
+        overflow-x: auto;
+      }
+
+      .list-table {
+        min-width: 700px;
+      }
+
+      .theme-toggle {
+        right: 20px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    #fixed-nav-wrapper {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    #fixed-nav-wrapper .floating-nav {
+      position: static;
+      bottom: auto;
+      right: auto;
+      transform: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      margin-bottom: 6px;
+      z-index: 1;
+    }
+
+    #fixed-nav-wrapper .theme-toggle {
+      position: static;
+      margin: 0;
+      width: 60px;
+      height: 60px;
+      z-index: 2;
+    }
+
+    @media (max-width: 768px) {
+      #fixed-nav-wrapper {
+        right: 20px;
+        bottom: 20px;
+        gap: 8px;
+      }
+
+      #fixed-nav-wrapper .theme-toggle {
+        width: 50px;
+        height: 50px;
+      }
+
+      #fixed-nav-wrapper .nav-anchor {
+        width: 46px;
+        height: 46px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toast-container" id="toast-container"></div>
+  <div id="header"></div>
+  <div id="fixed-nav-wrapper" aria-hidden="false">
+    <nav class="floating-nav">
+      <div class="nav-anchor" onclick="scrollToSection('section-aguardando')">
+        <i class="fa-solid fa-hourglass nav-icon"
+          style="display: flex; align-items: center; justify-content: center;"></i>
+        <div class="nav-tooltip">Aguardando</div>
+      </div>
+      <div class="nav-anchor" onclick="scrollToSection('section-retirados')">
+        <i class="fa-solid fa-house-user nav-icon"
+          style="display: flex; align-items: center; justify-content: center;"></i>
+        <div class="nav-tooltip">Retirados</div>
+      </div>
+      <div class="nav-anchor" onclick="scrollToSection('section-devolvidos')">
+        <i class="fa-solid fa-house-circle-check nav-icon"
+          style="display: flex; align-items: center; justify-content: center;"></i>
+        <div class="nav-tooltip">Devolvidos</div>
+      </div>
+    </nav>
+    <div class="theme-toggle" onclick="toggleTheme()">
+      <svg class="theme-icon" id="theme-icon" viewBox="0 0 24 24" fill="white">
+        <path
+          d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+      </svg>
+    </div>
+  </div>
+
+  <main class="admin-container">
+    <div class="page-title">
+      <h1>Gerenciar Reservas</h1>
+      <p>Controle de pré-reservas e devoluções</p>
+    </div>
+
+    <section id="section-aguardando" class="section">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-title">Pré-Reservas Aguardando</h2>
+          <span class="badge" id="badge-aguardando">0</span>
+        </div>
+        <div class="section-search">
+          <select class="search-select" id="search-type-aguardando">
+            <option value="livro">Buscar por Livro</option>
+            <option value="matricula">Buscar por Matrícula</option>
+          </select>
+          <input type="text" class="search-input" id="search-aguardando" placeholder="Digite para pesquisar..." />
+
+          <a href="reservar.html" class="add-button">
+            <span>➕</span>
+            Adicionar Reserva
+          </a>
+
+        </div>
+      </div>
+      <div class="section-content" id="content-aguardando"></div>
+    </section>
+
+    <section id="section-retirados" class="section">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-title">Livros Retirados</h2>
+          <span class="badge" id="badge-retirados">0</span>
+        </div>
+        <div class="section-search">
+          <select class="search-select" id="search-type-retirados">
+            <option value="livro">Buscar por Livro</option>
+            <option value="matricula">Buscar por Matrícula</option>
+          </select>
+          <input type="text" class="search-input" id="search-retirados" placeholder="Digite para pesquisar..." />
+        </div>
+      </div>
+      <div class="section-content">
+        <table class="list-table">
+          <thead>
+            <tr>
+              <th>Capa</th>
+              <th>Livro</th>
+              <th>Aluno</th>
+              <th>Matrícula</th>
+              <th>Data Retirada</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="table-retirados"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="section-devolvidos" class="section">
+      <div class="section-header">
+        <div class="section-title-group">
+          <h2 class="section-title">Livros Devolvidos</h2>
+          <span class="badge" id="badge-devolvidos">0</span>
+        </div>
+        <div class="section-search">
+          <select class="search-select" id="search-type-devolvidos">
+            <option value="livro">Buscar por Livro</option>
+            <option value="matricula">Buscar por Matrícula</option>
+          </select>
+          <input type="text" class="search-input" id="search-devolvidos" placeholder="Digite para pesquisar..." />
+        </div>
+      </div>
+      <div class="section-content">
+        <table class="list-table">
+          <thead>
+            <tr>
+              <th>Capa</th>
+              <th>Livro</th>
+              <th>Aluno</th>
+              <th>Matrícula</th>
+              <th>Data Devolução</th>
+            </tr>
+          </thead>
+          <tbody id="table-devolvidos"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <div id="modal-retirada" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Retirada</h3>
+        <button class="close-modal" onclick="closeModal('modal-retirada')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Data e Hora da Retirada</label>
+          <input type="datetime-local" id="input-data-retirada" />
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="check-auto-date" checked onchange="toggleAutoDate()" />
+          <label for="check-auto-date">Usar data/hora atual automaticamente</label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('modal-retirada')">Cancelar</button>
+        <button class="modal-btn confirm" onclick="confirmarRetirada()">Confirmar Retirada</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-devolucao" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Registrar Devolução</h3>
+        <button class="close-modal" onclick="closeModal('modal-devolucao')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Data e Hora da Devolução</label>
+          <input type="datetime-local" id="input-data-devolucao" />
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="check-auto-date-dev" checked onchange="toggleAutoDateDev()" />
+          <label for="check-auto-date-dev">Usar data/hora atual automaticamente</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="check-disponibilizar" checked />
+          <label for="check-disponibilizar">Disponibilizar livro novamente (+1 no estoque)</label>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel" onclick="closeModal('modal-devolucao')">Cancelar</button>
+        <button class="modal-btn confirm" onclick="confirmarDevolucao()">Confirmar Devolução</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="auth-guard.js"></script>
+  <script src="toast.js"></script>
+
+  <script>
+    let todasReservas = [];
+    let reservasAguardando = [];
+    let reservasRetiradas = [];
+    let reservasDevolvidas = [];
+    let reservaSelecionada = null;
+    let currentSlide = 0;
+
+    async function inicializarApp() {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+      console.log("✅ Conectando em:", API_URL);
+
+      fetchReservas();
+      setupSearchListeners();
+      updateActiveNav();
+    }
+
+    async function loadHTML(elementId, file) {
+      try {
+        const response = await fetch(file);
+        if (response.ok) {
+          document.getElementById(elementId).innerHTML = await response.text();
+        }
+      } catch (error) {
+        console.error(`Error loading ${file}:`, error);
+      }
+    }
+
+    loadHTML("header", "header.html");
+    loadHTML("footer", "footer.html");
+
+    function scrollToSection(sectionId) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function updateActiveNav() {
+      const sections = ['section-aguardando', 'section-retirados', 'section-devolvidos'];
+      const navAnchors = document.querySelectorAll('.nav-anchor');
+
+      window.addEventListener('scroll', () => {
+        let current = '';
+
+        sections.forEach(sectionId => {
+          const section = document.getElementById(sectionId);
+          if (section) {
+            const sectionTop = section.offsetTop - 150;
+            if (window.pageYOffset >= sectionTop) {
+              current = sectionId;
+            }
+          }
+        });
+
+        navAnchors.forEach((anchor, index) => {
+          anchor.classList.remove('active');
+          if (sections[index] === current) {
+            anchor.classList.add('active');
+          }
+        });
+      });
+    }
+
+    async function fetchReservas() {
+      try {
+        const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+        const response = await fetch(`${API_URL}/pre_reservas`);
+        if (!response.ok) throw new Error("Erro ao carregar reservas");
+
+        todasReservas = await response.json();
+
+        reservasAguardando = todasReservas.filter(r => r.status === 'aguardando');
+        reservasRetiradas = todasReservas.filter(r => r.status === 'retirado');
+        reservasDevolvidas = todasReservas.filter(r => r.status === 'devolvido');
+
+        updateBadges();
+        renderCarousel();
+        renderTableRetirados();
+        renderTableDevolvidos();
+      } catch (error) {
+        console.error("Erro ao buscar reservas:", error);
+      }
+    }
+
+    function updateBadges() {
+      document.getElementById('badge-aguardando').textContent = reservasAguardando.length;
+      document.getElementById('badge-retirados').textContent = reservasRetiradas.length;
+      document.getElementById('badge-devolvidos').textContent = reservasDevolvidas.length;
+    }
+
+    function renderCarousel() {
+      const container = document.getElementById('content-aguardando');
+
+      if (reservasAguardando.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <div class="empty-text">Nenhuma pré-reserva aguardando</div>
+            <div class="empty-subtext">As pré-reservas pendentes aparecerão aqui</div>
+          </div>
+        `;
+        return;
+      }
+
+      const cards = reservasAguardando.map(reserva => `
+        <div class="reservation-card">
+          <div class="card-cover">
+            <img src="${reserva.capa || 'Imagens/capalivro.png'}" 
+                 alt="${reserva.titulo}"
+                 onerror="this.src='Imagens/capalivro.png'" />
+            <span class="status-badge aguardando">Aguardando</span>
+          </div>
+          <div class="card-info">
+            <h3 class="card-book-title">${reserva.titulo}</h3>
+            <div class="card-detail">
+              <strong>👤 Aluno:</strong> ${reserva.nome_usuario}
+            </div>
+            <div class="card-detail">
+              <strong>🎓 Matrícula:</strong> ${reserva.matricula}
+            </div>
+            <div class="card-detail">
+              <strong>📅 Retirar até:</strong> ${formatDate(reserva.data_retirada_max)}
+            </div>
+            <div class="card-action">
+              <button class="action-button" onclick="abrirModalRetirada(${reserva.id})">
+                ✓ Registrar Retirada
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = `
+        <div class="carousel-container">
+          <button class="carousel-btn prev" onclick="slideCarousel(-1)">‹</button>
+          <div class="carousel-wrapper">
+            <div class="carousel" id="carousel">
+              ${cards}
+            </div>
+          </div>
+          <button class="carousel-btn next" onclick="slideCarousel(1)">›</button>
+        </div>
+      `;
+
+      currentSlide = 0;
+      updateCarouselPosition();
+    }
+
+    function slideCarousel(direction) {
+      const carousel = document.getElementById('carousel');
+      if (!carousel) return;
+
+      const cardWidth = 300 + 24;
+      const visibleCards = Math.floor(carousel.parentElement.offsetWidth / cardWidth);
+      const maxSlide = Math.max(0, reservasAguardando.length - visibleCards);
+
+      currentSlide = Math.max(0, Math.min(maxSlide, currentSlide + direction));
+      updateCarouselPosition();
+    }
+
+    function updateCarouselPosition() {
+      const carousel = document.getElementById('carousel');
+      if (!carousel) return;
+
+      const cardWidth = 300 + 24;
+      carousel.style.transform = `translateX(-${currentSlide * cardWidth}px)`;
+    }
+
+    function renderTableRetirados() {
+      const tbody = document.getElementById('table-retirados');
+
+      if (reservasRetiradas.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 3rem;">
+              <div class="empty-icon">📖</div>
+              <div class="empty-text">Nenhum livro retirado</div>
+              <div class="empty-subtext">Os livros retirados aparecerão aqui</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = reservasRetiradas.map(reserva => `
+        <tr>
+          <td>
+            <img src="${reserva.capa || 'Imagens/capalivro.png'}" 
+                 class="book-thumb" 
+                 alt="${reserva.titulo}"
+                 onerror="this.src='Imagens/capalivro.png'" />
+          </td>
+          <td><strong>${reserva.titulo}</strong></td>
+          <td>${reserva.nome_usuario}</td>
+          <td>${reserva.matricula}</td>
+          <td>${formatDateTime(reserva.data_retirada)}</td>
+          <td>
+            <button class="table-button" onclick="abrirModalDevolucao(${reserva.id})">
+              📥 Registrar Devolução
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderTableDevolvidos() {
+      const tbody = document.getElementById('table-devolvidos');
+
+      if (reservasDevolvidas.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 3rem;">
+              <div class="empty-icon">✅</div>
+              <div class="empty-text">Nenhum livro devolvido</div>
+              <div class="empty-subtext">Os livros devolvidos aparecerão aqui</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = reservasDevolvidas.map(reserva => `
+        <tr>
+          <td>
+            <img src="${reserva.capa || 'Imagens/capalivro.png'}" 
+                 class="book-thumb" 
+                 alt="${reserva.titulo}"
+                 onerror="this.src='Imagens/capalivro.png'" />
+          </td>
+          <td><strong>${reserva.titulo}</strong></td>
+          <td>${reserva.nome_usuario}</td>
+          <td>${reserva.matricula}</td>
+          <td>${formatDateTime(reserva.data_devolucao)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function setupSearchListeners() {
+      ['aguardando', 'retirados', 'devolvidos'].forEach(section => {
+        const input = document.getElementById(`search-${section}`);
+        const select = document.getElementById(`search-type-${section}`);
+
+        if (input) {
+          input.addEventListener('input', () => filterSection(section));
+        }
+        if (select) {
+          select.addEventListener('change', () => filterSection(section));
+        }
+      });
+    }
+
+    function filterSection(section) {
+      const searchTerm = document.getElementById(`search-${section}`).value.toLowerCase().trim();
+      const searchType = document.getElementById(`search-type-${section}`).value;
+
+      if (!searchTerm) {
+        fetchReservas();
+        return;
+      }
+
+      const originalData = todasReservas.filter(r => {
+        if (section === 'aguardando') return r.status === 'aguardando';
+        if (section === 'retirados') return r.status === 'retirado';
+        if (section === 'devolvidos') return r.status === 'devolvido';
+        return false;
+      });
+
+      const filtered = originalData.filter(r => {
+        if (searchType === 'livro') {
+          return r.titulo.toLowerCase().includes(searchTerm);
+        } else {
+
+          const matricula = String(r.matricula || '').toLowerCase();
+          return matricula.includes(searchTerm);
+        }
+      });
+
+      if (section === 'aguardando') {
+        reservasAguardando = filtered;
+        renderCarousel();
+      } else if (section === 'retirados') {
+        reservasRetiradas = filtered;
+        renderTableRetirados();
+      } else if (section === 'devolvidos') {
+        reservasDevolvidas = filtered;
+        renderTableDevolvidos();
+      }
+
+      updateBadges();
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    function formatDateTime(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleString('pt-BR');
+    }
+
+    function abrirModalRetirada(id) {
+      reservaSelecionada = reservasAguardando.find(r => r.id === id);
+      if (!reservaSelecionada) return;
+
+      const now = new Date();
+      const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+      document.getElementById('input-data-retirada').value = localDateTime;
+      document.getElementById('check-auto-date').checked = true;
+      document.getElementById('input-data-retirada').disabled = true;
+
+      document.getElementById('modal-retirada').classList.add('show');
+    }
+
+    function abrirModalDevolucao(id) {
+      reservaSelecionada = reservasRetiradas.find(r => r.id === id);
+      if (!reservaSelecionada) return;
+
+      const now = new Date();
+      const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+      document.getElementById('input-data-devolucao').value = localDateTime;
+      document.getElementById('check-auto-date-dev').checked = true;
+      document.getElementById('input-data-devolucao').disabled = true;
+      document.getElementById('check-disponibilizar').checked = true;
+
+      document.getElementById('modal-devolucao').classList.add('show');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('show');
+      reservaSelecionada = null;
+    }
+
+    function toggleAutoDate() {
+      const checkbox = document.getElementById('check-auto-date');
+      const input = document.getElementById('input-data-retirada');
+      input.disabled = checkbox.checked;
+
+      if (checkbox.checked) {
+        const now = new Date();
+        const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 16);
+        input.value = localDateTime;
+      }
+    }
+
+    function toggleAutoDateDev() {
+      const checkbox = document.getElementById('check-auto-date-dev');
+      const input = document.getElementById('input-data-devolucao');
+      input.disabled = checkbox.checked;
+
+      if (checkbox.checked) {
+        const now = new Date();
+        const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 16);
+        input.value = localDateTime;
+      }
+    }
+
+    async function confirmarRetirada() {
+  if (!reservaSelecionada) return;
+
+  const autoDate = document.getElementById('check-auto-date').checked;
+  const dataRetirada = autoDate
+    ? new Date().toISOString()
+    : new Date(document.getElementById('input-data-retirada').value).toISOString();
+
+  const confirmBtn = document.querySelector('#modal-retirada .modal-btn.confirm');
+  const originalText = confirmBtn.innerHTML;
+  confirmBtn.innerHTML = '⏳ Processando...';
+  confirmBtn.disabled = true;
+
+  try {
+    const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+    const response = await fetch(`${API_URL}/pre_reservas/${reservaSelecionada.id}/retirar`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data_retirada: dataRetirada })
+    });
+
+    if (response.ok) {
+      alert('Retirada registrada com sucesso!');
+      closeModal('modal-retirada');
+      await fetchReservas();
+    } else {
+      const resultado = await response.json();
+      alert('❌ Erro:\n' + (resultado.erro || 'Erro ao registrar retirada.'));
+    }
+  } catch (error) {
+    console.error('Erro ao registrar retirada:', error);
+    alert('❌ Erro:\nErro ao registrar retirada. Tente novamente.');
+  } finally {
+    confirmBtn.innerHTML = originalText;
+    confirmBtn.disabled = false;
+  }
+}
+
+async function confirmarDevolucao() {
+  if (!reservaSelecionada) return;
+
+  const autoDate = document.getElementById('check-auto-date-dev').checked;
+  const dataDevolucao = autoDate
+    ? new Date().toISOString()
+    : new Date(document.getElementById('input-data-devolucao').value).toISOString();
+
+  const disponibilizar = document.getElementById('check-disponibilizar').checked;
+
+  try {
+    const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+    const response = await fetch(`${API_URL}/pre_reservas/${reservaSelecionada.id}/devolver`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data_devolucao: dataDevolucao,
+        disponibilizar: disponibilizar
+      })
+    });
+
+    const resultado = await response.json();
+
+    if (response.ok) {
+      alert(resultado.mensagem);
+      closeModal('modal-devolucao');
+      await fetchReservas();
+    } else {
+      alert(resultado.erro || 'Erro ao registrar devolução.'); 
+    }
+  } catch (error) {
+    console.error('Erro ao registrar devolução:', error);
+    alert('Erro ao registrar devolução. Tente novamente.'); 
+  }
+}
+
+    document.addEventListener('DOMContentLoaded', inicializarApp);
+
+    window.addEventListener('resize', () => {
+      if (reservasAguardando.length > 0) {
+        updateCarouselPosition();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal')) {
+        closeModal(e.target.id);
+      }
+    });
+  </script>
+
+  <script>
+    const PAGINA_ATUAL = "reservas";
+  </script>
+
+  <script src="header.js"></script>
+
+  <script src="theme-manager.js"></script>
+
+</body>
+
+</html>

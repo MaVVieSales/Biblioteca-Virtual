@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+
+        * {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            padding-top: 82px;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .header-top {
+            background-color: #e30613;
+            height: 8px;
+            width: 100%;
+        }
+
+        .header-main {
+            background: linear-gradient(135deg, #9a1915 0%, #c8102e 100%);
+            padding: 1rem 2%;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 1rem;
+        }
+
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            min-width: 296px;
+            max-width: 296px;
+            flex-shrink: 0;
+        }
+
+        .logo-img {
+            height: auto;
+            width: 100%;
+            max-width: 256px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+
+        nav {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+            min-width: 296px;
+            max-width: 296px;
+            flex-shrink: 0;
+        }
+
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .user-info:hover .user-avatar {
+            transform: scale(1.1);
+            border-color: white;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #9a1915;
+            font-size: 1.1rem;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1;
+        }
+
+        
+        .btn-logout,
+        .btn-perfil {
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-logout {
+            background-color: transparent;
+            color: white;
+        }
+
+        .btn-logout:hover {
+            background-color: white;
+            color: #9a1915;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-perfil {
+            display: none;
+            background-color: white;
+            color: #9a1915;
+        }
+
+        .btn-perfil:hover {
+            background-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .user-section.on-perfil-page .user-info {
+            display: none !important;
+        }
+
+        .user-section.on-perfil-page .btn-perfil {
+            display: inline-flex !important;
+        }
+
+        @media (max-width: 1200px) {
+            .logo-section,
+            .user-section {
+                min-width: 200px;
+                max-width: 200px;
+            }
+
+            .logo-img {
+                max-width: 200px;
+            }
+
+            .nav-links {
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .logo-section,
+            .user-section {
+                min-width: 150px;
+                max-width: 150px;
+            }
+
+            .logo-img {
+                max-width: 150px;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+            }
+
+            .nav-icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            .user-name {
+                font-size: 0.85rem;
+            }
+
+            .btn-logout,
+            .btn-perfil {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-main {
+                padding: 0.8rem 1%;
+            }
+
+            .logo-section,
+            .user-section {
+                min-width: 120px;
+                max-width: 120px;
+            }
+
+            .logo-img {
+                max-width: 120px;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .nav-link span {
+                font-size: 0.75rem;
+            }
+
+            .nav-icon {
+                width: 22px;
+                height: 22px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .btn-logout,
+            .btn-perfil {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo-section {
+                min-width: 100%;
+                max-width: 100%;
+                justify-content: center;
+            }
+
+            .logo-img {
+                max-width: 180px;
+            }
+
+            nav {
+                width: 100%;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                gap: 0.8rem;
+            }
+
+            .nav-link {
+                padding: 0.3rem;
+            }
+
+            .nav-link span {
+                font-size: 0.7rem;
+            }
+
+            .nav-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            .user-section {
+                min-width: 100%;
+                max-width: 100%;
+                justify-content: center;
+                gap: 3.8rem;
+            }
+
+            .user-info {
+                flex: 0;
+            }
+
+            body {
+                padding-top: 140px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .nav-link span {
+                display: none;
+            }
+
+            .btn-logout span,
+            .btn-perfil span {
+                display: none;
+            }
+
+            .btn-logout,
+            .btn-perfil {
+                padding: 0.5rem;
+                aspect-ratio: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="header-top"></div>
+        <div class="header-main">
+            <div class="navbar-container">
+                <div class="logo-section">
+                    <img src="Imagem/senai_todo.png" alt="SENAI Logo" class="logo-img"
+                        onclick="window.location.href='home.html'">
+                </div>
+
+                <nav>
+                    <ul class="nav-links">
+                        <li class="nav-item">
+                            <a href="home.html" class="nav-link" data-page="home">
+                                <svg class="nav-icon" fill="currentColor" viewBox="0 0 50 50"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M7.8125 3C7.335938 3.089844 6.992188 3.511719 7 4L7 31L3 31C2.96875 31 2.9375 31 2.90625 31C2.390625 31.046875 1.996094 31.480469 2 32L2 36C2 36.550781 2.449219 37 3 37L6 37L6 44.5C6 45.867188 7.132813 47 8.5 47C9.867188 47 11 45.867188 11 44.5L11 37L39 37L39 44.5C39 45.867188 40.132813 47 41.5 47C42.867188 47 44 45.867188 44 44.5L44 37L47 37C47.550781 37 48 36.550781 48 36L48 32C48 31.449219 47.550781 31 47 31L43.875 31C43.902344 30.867188 43.902344 30.726563 43.875 30.59375L38.8125 9.1875C38.703125 8.671875 38.210938 8.328125 37.6875 8.40625C37.667969 8.414063 37.644531 8.425781 37.625 8.4375L32.75 9.59375C32.378906 9.679688 32.085938 9.972656 32 10.34375L32 10C32 9.449219 31.550781 9 31 9L25 9L25 4C25 3.449219 24.550781 3 24 3L16.0625 3C16.042969 3 16.019531 3 16 3L8 3C7.96875 3 7.9375 3 7.90625 3C7.875 3 7.84375 3 7.8125 3 Z M 9 5L15 5L15 31L9 31 Z M 17 5L23 5L23 9.90625C23 9.9375 23 9.96875 23 10L23 31L17 31 Z M 10.71875 7C10.167969 7.078125 9.78125 7.589844 9.859375 8.140625C9.9375 8.691406 10.449219 9.078125 11 9L13 9C13.359375 9.003906 13.695313 8.816406 13.878906 8.503906C14.058594 8.191406 14.058594 7.808594 13.878906 7.496094C13.695313 7.183594 13.359375 6.996094 13 7L11 7C10.96875 7 10.9375 7 10.90625 7C10.875 7 10.84375 7 10.8125 7C10.78125 7 10.75 7 10.71875 7 Z M 18.71875 7C18.167969 7.078125 17.78125 7.589844 17.859375 8.140625C17.9375 8.691406 18.449219 9.078125 19 9L21 9C21.359375 9.003906 21.695313 8.816406 21.878906 8.503906C22.058594 8.191406 22.058594 7.808594 21.878906 7.496094C21.695313 7.183594 21.359375 6.996094 21 7L19 7C18.96875 7 18.9375 7 18.90625 7C18.875 7 18.84375 7 18.8125 7C18.78125 7 18.75 7 18.71875 7 Z M 37.09375 10.59375L37.71875 13.28125C37.507813 12.902344 37.082031 12.703125 36.65625 12.78125C36.625 12.789063 36.59375 12.800781 36.5625 12.8125L35.59375 13.03125C35.1875 13.101563 34.867188 13.410156 34.78125 13.8125L34.1875 11.28125 Z M 32 10.78125L36.78125 31L32 31 Z M 25 11L30 11L30 31L25 31 Z M 26.71875 13C26.167969 13.078125 25.78125 13.589844 25.859375 14.140625C25.9375 14.691406 26.449219 15.078125 27 15L28 15C28.359375 15.003906 28.695313 14.816406 28.878906 14.503906C29.058594 14.191406 29.058594 13.808594 28.878906 13.496094C28.695313 13.183594 28.359375 12.996094 28 13L27 13C26.96875 13 26.9375 13 26.90625 13C26.875 13 26.84375 13 26.8125 13C26.78125 13 26.75 13 26.71875 13 Z M 37.84375 13.84375L40.875 26.6875C40.652344 26.445313 40.324219 26.332031 40 26.375C39.945313 26.382813 39.894531 26.390625 39.84375 26.40625C39.824219 26.414063 39.800781 26.425781 39.78125 26.4375L38.8125 26.65625C38.40625 26.726563 38.085938 27.035156 38 27.4375L35 14.6875C35.265625 14.984375 35.683594 15.09375 36.0625 14.96875L37.03125 14.75C37.476563 14.664063 37.808594 14.292969 37.84375 13.84375 Z M 10.71875 27C10.167969 27.078125 9.78125 27.589844 9.859375 28.140625C9.9375 28.691406 10.449219 29.078125 11 29L13 29C13.359375 29.003906 13.695313 28.816406 13.878906 28.503906C14.058594 28.191406 14.058594 27.808594 13.878906 27.496094C13.695313 27.183594 13.359375 26.996094 13 27L11 27C10.96875 27 10.9375 27 10.90625 27C10.875 27 10.84375 27 10.8125 27C10.78125 27 10.75 27 10.71875 27 Z M 18.71875 27C18.167969 27.078125 17.78125 27.589844 17.859375 28.140625C17.9375 28.691406 18.449219 29.078125 19 29L21 29C21.359375 29.003906 21.695313 28.816406 21.878906 28.503906C22.058594 28.191406 22.058594 27.808594 21.878906 27.496094C21.695313 27.183594 21.359375 26.996094 21 27L19 27C18.96875 27 18.9375 27 18.90625 27C18.875 27 18.84375 27 18.8125 27C18.78125 27 18.75 27 18.71875 27 Z M 26.71875 27C26.167969 27.078125 25.78125 27.589844 25.859375 28.140625C25.9375 28.691406 26.449219 29.078125 27 29L28 29C28.359375 29.003906 28.695313 28.816406 28.878906 28.503906C29.058594 28.191406 29.058594 27.808594 28.878906 27.496094C28.695313 27.183594 28.359375 26.996094 28 27L27 27C26.96875 27 26.9375 27 26.90625 27C26.875 27 26.84375 27 26.8125 27C26.78125 27 26.75 27 26.71875 27 Z M 41.09375 27.625L41.6875 30.0625L38.78125 30.75L38.21875 28.3125C38.484375 28.609375 38.902344 28.71875 39.28125 28.59375L40.25 28.375C40.65625 28.320313 40.992188 28.023438 41.09375 27.625 Z M 4 33L46 33L46 35L4 35 Z M 8 37L9 37L9 44.5C9 44.785156 8.785156 45 8.5 45C8.214844 45 8 44.785156 8 44.5 Z M 41 37L42 37L42 44.5C42 44.785156 41.785156 45 41.5 45C41.214844 45 41 44.785156 41 44.5Z">
+                                    </path>
+                                </svg>
+                                <span>Estante</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="tccs.html" class="nav-link" data-page="tccs">
+                                <svg class="nav-icon" fill="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
+                                    <path d="M8 12h8v2H8zm0 4h8v2H8zm0-8h3v2H8z" />
+                                </svg>
+                                <span>TCCs</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="ReservaDeLivros.html" class="nav-link" data-page="reservas">
+                                <svg class="nav-icon" fill="currentColor" viewBox="0 0 16 16"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M4.04 7.43a4 4 0 0 1 7.92 0 .5.5 0 1 1-.99.14 3 3 0 0 0-5.94 0 .5.5 0 1 1-.99-.14" />
+                                    <path fill-rule="evenodd"
+                                        d="M4 9.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm1 .5v3h6v-3h-1v.5a.5.5 0 0 1-1 0V10z" />
+                                    <path
+                                        d="M6 2.341V2a2 2 0 1 1 4 0v.341c2.33.824 4 3.047 4 5.659v1.191l1.17.585a1.5 1.5 0 0 1 .83 1.342V13.5a1.5 1.5 0 0 1-1.5 1.5h-1c-.456.607-1.182 1-2 1h-7a2.5 2.5 0 0 1-2-1h-1A1.5 1.5 0 0 1 0 13.5v-2.382a1.5 1.5 0 0 1 .83-1.342L2 9.191V8a6 6 0 0 1 4-5.659M7 2v.083a6 6 0 0 1 2 0V2a1 1 0 0 0-2 0M3 13.5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5V8A5 5 0 0 0 3 8zm-1-3.19-.724.362a.5.5 0 0 0-.276.447V13.5a.5.5 0 0 0 .5.5H2zm12 0V14h.5a.5.5 0 0 0 .5-.5v-2.382a.5.5 0 0 0-.276-.447L14 10.309Z" />
+                                </svg>
+                                <span>Reservas</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <div class="user-section" id="user-section">
+                    <a href="perfil.html" class="user-info" title="Ir para Perfil">
+                        <div class="user-avatar" id="user-avatar">
+                            👤
+                        </div>
+                        <span class="user-name" id="user-name">Usuário</span>
+                    </a>
+                    <button class="btn-perfil" onclick="window.location.href='perfil.html'">
+                        <svg class="btn-icon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path
+                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z" />
+                        </svg>
+                        <span>Meu Perfil</span>
+                    </button>
+                    <button class="btn-logout" onclick="handleLogout()">
+                        <span>Sair</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        function handleLogout() {
+            alert('Logout realizado!');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const userSection = document.getElementById('user-section');
+            const currentPage = window.location.pathname;
+            
+            if (currentPage.includes('perfil.html')) {
+                userSection.classList.add('on-perfil-page');
+            }
+        });
+    </script>
+</body>
+
+</html>

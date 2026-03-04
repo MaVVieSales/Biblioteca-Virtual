@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca Virtual - TCCs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/png" href="Imagem/ico.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      background-color: #f5f5f5;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    body.dark-mode {
+      background-color: #0a0a0a;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .tcc-container {
+      background-color: #0a0a0a;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      right: 30px;
+      bottom: 30px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.4);
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(154, 25, 21, 0.6);
+    }
+
+    .theme-icon {
+      width: 30px;
+      height: 30px;
+      transition: transform 0.5s ease;
+    }
+
+    .tcc-container {
+      min-height: 100vh;
+      padding: 2rem 5%;
+      padding-top: 120px;
+      background-color: #f5f5f5;
+      transition: background-color 0.5s ease;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .page-title h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #9a1915;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-mode .page-title h1 {
+      color: #e30613;
+    }
+
+    .page-title p {
+      font-size: 1.1rem;
+      color: #666;
+      font-weight: 400;
+    }
+
+    body.dark-mode .page-title p {
+      color: #aaa;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 200px;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    body.dark-mode .stat-card {
+      background: #1a1a1a;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(154, 25, 21, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #9a1915;
+      margin-bottom: 0.5rem;
+    }
+
+    body.dark-mode .stat-number {
+      color: #e30613;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 600;
+    }
+
+    body.dark-mode .stat-label {
+      color: #aaa;
+    }
+
+    .controls-bar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      animation: fadeInUp 0.8s ease;
+    }
+
+    body.dark-mode .controls-bar {
+      background: #1a1a1a;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 0.8rem 1rem 0.8rem 3rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: all 0.3s ease;
+      background-color: #f8f8f8;
+    }
+
+    body.dark-mode .search-box input {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: #9a1915;
+      background-color: white;
+    }
+
+    body.dark-mode .search-box input:focus {
+      background-color: #1a1a1a;
+      border-color: #e30613;
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+    }
+
+    .filter-select {
+      padding: 0.8rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      background-color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #333;
+    }
+
+    body.dark-mode .filter-select {
+      background-color: #262626;
+      border-color: #333;
+      color: #e0e0e0;
+    }
+
+    .filter-select:hover {
+      border-color: #9a1915;
+    }
+
+    body.dark-mode .filter-select:hover {
+      border-color: #e30613;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #9a1915;
+    }
+
+    .add-button {
+      padding: 0.8rem 2rem;
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(154, 25, 21, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .add-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(154, 25, 21, 0.5);
+    }
+
+    .tccs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .tcc-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-mode .tcc-card {
+      background: #1a1a1a;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .tcc-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 25px rgba(154, 25, 21, 0.25);
+    }
+
+    .tcc-header {
+      background: linear-gradient(135deg, #9a1915, #e30613);
+      padding: 1.2rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tcc-header::before {
+      content: '📄';
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      font-size: 5rem;
+      opacity: 0.15;
+    }
+
+    .tcc-id {
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0.9;
+      margin-bottom: 0.3rem;
+    }
+
+    .tcc-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tcc-body {
+      padding: 1.2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tcc-info {
+      flex: 1;
+      margin-bottom: 1rem;
+    }
+
+    .tcc-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    body.dark-mode .tcc-detail {
+      color: #aaa;
+    }
+
+    .tcc-detail-icon {
+      font-size: 1rem;
+    }
+
+    .tcc-detail-label {
+      font-weight: 600;
+      color: #9a1915;
+      min-width: 60px;
+    }
+
+    body.dark-mode .tcc-detail-label {
+      color: #e30613;
+    }
+
+    .tcc-course-tag {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      background-color: #f5f5f5;
+      color: #9a1915;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+
+    body.dark-mode .tcc-course-tag {
+      background-color: #262626;
+      color: #e30613;
+    }
+
+    .tcc-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f0f0f0;
+    }
+
+    body.dark-mode .tcc-actions {
+      border-top-color: #262626;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .view-btn {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    body.dark-mode .view-btn {
+      background-color: #262626;
+      color: #e0e0e0;
+    }
+
+    .view-btn:hover {
+      background-color: #9a1915;
+      color: white;
+    }
+
+    .edit-btn {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    body.dark-mode .edit-btn {
+      background-color: #262626;
+      color: #e0e0e0;
+    }
+
+    .edit-btn:hover {
+      background-color: #9a1915;
+      color: white;
+    }
+
+    .delete-btn {
+      background-color: #f0f0f0;
+      color: #333;
+    }
+
+    body.dark-mode .delete-btn {
+      background-color: #262626;
+      color: #e0e0e0;
+    }
+
+    .delete-btn:hover {
+      background-color: #e30613;
+      color: white;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #999;
+      font-size: 1.2rem;
+      grid-column: 1 / -1;
+    }
+
+    .no-results-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .tcc-container {
+        padding: 1rem 3%;
+        padding-top: 100px;
+      }
+
+      .page-title h1 {
+        font-size: 2rem;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+
+      .tccs-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+
+      .theme-toggle {
+        right: 20px;
+        bottom: 20px;
+        width: 50px;
+        height: 50px;
+      }
+
+      .stats-bar {
+        gap: 1rem;
+      }
+
+      .stat-card {
+        min-width: 150px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <div class="theme-toggle" onclick="toggleTheme()">
+    <svg class="theme-icon" id="theme-icon" viewBox="0 0 24 24" fill="white">
+      <path
+        d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z" />
+    </svg>
+  </div>
+
+  <main class="tcc-container">
+    <div class="page-title">
+      <h1>Trabalhos de Conclusão de Curso</h1>
+      <p>Explore os TCCs desenvolvidos no SENAI 9.14</p>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-number" id="total-tccs">0</div>
+        <div class="stat-label">Total de TCCs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="total-courses">0</div>
+        <div class="stat-label">Cursos Disponíveis</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="filtered-count">0</div>
+        <div class="stat-label">TCCs Exibidos</div>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Pesquisar por título..." />
+      </div>
+
+      <select id="course-filter" class="filter-select">
+        <option value="">Todos os Cursos</option>
+      </select>
+
+      <a href="cadastrarTCC.html" class="add-button">
+        <span>➕</span>
+        Adicionar TCC
+      </a>
+    </div>
+
+    <div id="tccs-container" class="tccs-grid"></div>
+  </main>
+
+  <div id="footer"></div>
+  <script src="config.js"></script>
+  <script src="auth-guard.js"></script>
+
+  <script>
+    async function inicializarApp() {
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const API_URL = window.APP_CONFIG?.API_URL || 'http://10.111.9.47:3009';
+      console.log("✅ Conectando em:", API_URL);
+
+    }
+
+    inicializarApp();
+  </script>
+
+
+  <script src="/config.js"></script>
+  <script>
+
+    console.log("API:", window.APP_CONFIG.API_URL);
+    let allTCCs = [];
+    let filteredTCCs = [];
+
+    async function loadHTML(elementId, file) {
+      try {
+        const response = await fetch(file);
+        if (response.ok) {
+          document.getElementById(elementId).innerHTML = await response.text();
+        }
+      } catch (error) {
+        console.error(`Error loading ${file}:`, error);
+      }
+    }
+
+    loadHTML("header", "header.html");
+    loadHTML("footer", "footer.html");
+
+    async function fetchTCCs() {
+      try {
+        const response = await fetch(`${window.APP_CONFIG.API_URL}/listarTCCs`);
+        if (!response.ok) throw new Error("Erro ao carregar os TCCs.");
+
+        const data = await response.json();
+        allTCCs = data.tcc || [];
+        filteredTCCs = [...allTCCs];
+
+        updateStats();
+        populateCourseFilter();
+        displayTCCs(filteredTCCs);
+      } catch (error) {
+        console.error("Erro:", error);
+        displayNoResults("Erro ao carregar TCCs. Verifique sua conexão.");
+      }
+    }
+
+    function updateStats() {
+      const courses = [...new Set(allTCCs.map(tcc => tcc.curso))];
+      document.getElementById('total-tccs').textContent = allTCCs.length;
+      document.getElementById('total-courses').textContent = courses.length;
+      document.getElementById('filtered-count').textContent = filteredTCCs.length;
+    }
+
+    function populateCourseFilter() {
+      const courseFilter = document.getElementById('course-filter');
+      const courses = [...new Set(allTCCs.map(tcc => tcc.curso))].sort();
+
+      courses.forEach(course => {
+        const option = document.createElement('option');
+        option.value = course;
+        option.textContent = course;
+        courseFilter.appendChild(option);
+      });
+    }
+
+    function displayTCCs(tccs) {
+      const container = document.getElementById('tccs-container');
+
+      if (tccs.length === 0) {
+        displayNoResults();
+        return;
+      }
+
+      container.innerHTML = tccs.map(tcc => `
+        <div class="tcc-card">
+          <div class="tcc-header">
+            <div class="tcc-id">ID: ${tcc.id}</div>
+            <h3 class="tcc-title">${tcc.titulo}</h3>
+          </div>
+          <div class="tcc-body">
+            <div class="tcc-info">
+              <div class="tcc-detail">
+                <span class="tcc-detail-icon">👤</span>
+                <span class="tcc-detail-label">Autor:</span>
+                <span>${tcc.autor || 'Não informado'}</span>
+              </div>
+              <div class="tcc-detail">
+                <span class="tcc-detail-icon">📅</span>
+                <span class="tcc-detail-label">Ano:</span>
+                <span>${tcc.ano}</span>
+              </div>
+              <div class="tcc-course-tag">${tcc.curso}</div>
+            </div>
+            <div class="tcc-actions">
+              <button class="action-btn view-btn" onclick="viewTCC('${tcc.link}')">
+                👁️ Visualizar
+              </button>
+              <button class="action-btn edit-btn" onclick="editTCC(${tcc.id})">
+                ✏️ Editar
+              </button>
+              <button class="action-btn delete-btn" onclick="deleteTCC(${tcc.id})">
+                🗑️ Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function displayNoResults(message = "Nenhum TCC encontrado.") {
+      const container = document.getElementById('tccs-container');
+      container.innerHTML = `
+        <div class="no-results">
+          <div class="no-results-icon">📄</div>
+          <p>${message}</p>
+        </div>
+      `;
+    }
+
+    function filterTCCs() {
+      const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      const selectedCourse = document.getElementById('course-filter').value;
+
+      filteredTCCs = allTCCs.filter(tcc => {
+        const matchesSearch = tcc.titulo.toLowerCase().includes(searchTerm);
+        const matchesCourse = !selectedCourse || tcc.curso === selectedCourse;
+
+        return matchesSearch && matchesCourse;
+      });
+
+      updateStats();
+      displayTCCs(filteredTCCs);
+    }
+
+    function viewTCC(link) {
+      window.open(link, '_blank');
+    }
+
+    function editTCC(id) {
+      window.location.href = `editarTCC.html?id=${id}`;
+    }
+
+    async function deleteTCC(id) {
+      if (!confirm("Você realmente deseja excluir este TCC?")) return;
+
+      try {
+        const response = await fetch(`${window.APP_CONFIG.API_URL}/TCCs/${id}`, {
+          method: "DELETE"
+        });
+
+        if (response.ok) {
+          alert("TCC excluído com sucesso!");
+          fetchTCCs();
+        } else {
+          alert("Erro ao excluir TCC.");
+        }
+      } catch (error) {
+        console.error("Erro ao excluir:", error);
+        alert("Erro ao excluir TCC.");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchTCCs();
+
+      document.getElementById('search-input').addEventListener('input', filterTCCs);
+      document.getElementById('course-filter').addEventListener('change', filterTCCs);
+    });
+  </script>
+  <script>
+    const PAGINA_ATUAL = "tccs";
+  </script>
+  <script src="header.js"></script>
+
+  <script src="theme-manager.js"></script>
+</body>
+
+</html>
